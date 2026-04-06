@@ -8,76 +8,71 @@
 </head>
 <body>
   <main class="container">
-    <header class="hero">
+    <section class="hero card">
       <h1>High-Value Individual Priority Survey</h1>
-      <p>
-        This survey asks managers and business leaders what they most want from a
-        <strong>high-value individual</strong> in <strong>digital transformation</strong>
-        and <strong>corporate enablement</strong>.
-      </p>
-      <p>
-        You have <strong>100 points</strong> in total. Allocate the points across the 18 areas
-        below to show which capabilities matter most in the ideal person.
-      </p>
-    </header>
+      <p>This survey is about the ideal <strong>high-value individual</strong> your organisation would want for <strong>digital transformation</strong> and <strong>corporate enablement</strong>.</p>
+      <p>You have <strong>100 points</strong> in total. Please allocate those 100 points across the 18 capability areas below to show what matters most in that ideal person.</p>
+    </section>
 
-    <section class="panel meta-panel">
-      <h2>Respondent profile</h2>
-      <div class="grid two-col">
-        <label>Name<input id="respondentName" type="text" placeholder="Optional" /></label>
-        <label>Email<input id="respondentEmail" type="email" placeholder="Optional" /></label>
-        <label>Company<input id="companyName" type="text" placeholder="Optional" /></label>
-        <label>Role<input id="jobTitle" type="text" placeholder="Optional" /></label>
-        <label>Industry<input id="industry" type="text" placeholder="Optional" /></label>
-        <label>Country<input id="country" type="text" placeholder="Optional" /></label>
+    <section class="card sticky-summary">
+      <div class="summary-group">
+        <div>
+          <div class="summary-label">Points used</div>
+          <div id="pointsUsed" class="summary-value">0 / 100</div>
+        </div>
+        <div>
+          <div class="summary-label">Points remaining</div>
+          <div id="pointsRemaining" class="summary-value">100</div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+          <div class="summary-note">The total must equal exactly 100 before submission.</div>
+        </div>
       </div>
     </section>
 
-    <section class="panel summary-bar">
-      <div>
-        <div class="summary-label">Points used</div>
-        <div id="pointsUsed" class="summary-number">0 / 100</div>
-      </div>
-      <div>
-        <div class="summary-label">Points remaining</div>
-        <div id="pointsRemaining" class="summary-number">100</div>
-      </div>
-      <div class="bar-wrap">
-        <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-      </div>
-    </section>
-
-    <section class="panel anchors">
+    <section class="card">
       <h2>How to answer</h2>
-      <p>
-        Think about the kind of person you would most value in your organisation when driving
-        digital transformation, improving business execution, and enabling managers and teams.
-      </p>
-      <ul>
-        <li><strong>Lower points:</strong> helpful, but not central to the role.</li>
-        <li><strong>Mid-range points:</strong> important working capability expected in strong performers.</li>
-        <li><strong>Higher points:</strong> critical differentiator in a high-impact, digitally capable professional.</li>
+      <ul class="guidance-list">
+        <li>Give more points to the capabilities that are most critical in the ideal person.</li>
+        <li>Give fewer points to capabilities that are useful but less central.</li>
+        <li>Think in terms of business value, digital transformation impact, and enablement of teams and managers.</li>
       </ul>
     </section>
 
-    <section id="questions" class="question-list"></section>
+    <section class="card">
+      <div class="table-wrap">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th class="col-num">#</th>
+              <th class="col-area">Capability area</th>
+              <th class="col-question">Manager question</th>
+              <th class="col-practice">What this looks like in practice</th>
+              <th class="col-points">Points</th>
+            </tr>
+          </thead>
+          <tbody id="matrixBody"></tbody>
+        </table>
+      </div>
+    </section>
 
-    <section class="panel actions">
+    <section class="card actions-card">
       <div class="button-row">
-        <button id="resetBtn" class="secondary">Reset all points</button>
-        <button id="autoBalanceBtn" class="secondary">Distribute remaining equally</button>
-        <button id="submitBtn" class="primary">Submit survey</button>
+        <button id="resetBtn" class="secondary" type="button">Reset all points</button>
+        <button id="autoBalanceBtn" class="secondary" type="button">Distribute remaining equally</button>
+        <button id="submitBtn" class="primary" type="button">Submit survey</button>
       </div>
       <p id="statusMsg" class="status"></p>
     </section>
 
-    <section id="resultsPanel" class="panel hidden">
-      <h2>Priority profile</h2>
-      <p>Your highest priorities for the ideal high-value individual are shown below.</p>
+    <section id="resultsPanel" class="card hidden">
+      <h2>Final priority profile</h2>
+      <p>These are the priorities you placed on the ideal high-value individual.</p>
       <div id="resultsList" class="results-list"></div>
-      <div class="button-row top-margin">
-        <button id="downloadJsonBtn" class="secondary">Download response JSON</button>
-        <button id="downloadCsvBtn" class="secondary">Download ranking CSV</button>
+      <div class="button-row top-space">
+        <button id="downloadJsonBtn" class="secondary" type="button">Download response JSON</button>
+        <button id="downloadCsvBtn" class="secondary" type="button">Download ranking CSV</button>
       </div>
     </section>
   </main>
