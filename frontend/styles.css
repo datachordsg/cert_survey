@@ -20,9 +20,7 @@ body {
 .hero h1 { margin-top: 0; margin-bottom: 8px; }
 .hero p { line-height: 1.5; }
 .sticky-summary {
-  position: sticky;
-  top: 0;
-  z-index: 5;
+  position: static;
 }
 .summary-group {
   display: grid;
@@ -73,9 +71,7 @@ body {
   vertical-align: top;
 }
 .matrix-table thead th {
-  position: sticky;
-  top: 88px;
-  z-index: 4;
+  position: static;
   background: #eef4ff;
   color: #1f2937;
   text-align: left;
@@ -168,5 +164,4 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 .top-space { margin-top: 16px; }
 @media (max-width: 900px) {
   .summary-group { grid-template-columns: 1fr; }
-  .matrix-table thead th { top: 136px; }
 }
