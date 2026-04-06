@@ -1,0 +1,146 @@
+[
+  {
+    "id": "data_structured",
+    "domain": "Data",
+    "competency": "Prepare & Validate Structured Data",
+    "short_label": "Structured data readiness",
+    "question": "How important is it that this high-value individual can organise, clean, and validate structured data so the business can rely on it for reporting and decision-making?",
+    "in_practice": "Can structure data properly, catch obvious errors, and ensure working data is usable, consistent, and fit for downstream business use."
+  },
+  {
+    "id": "data_quality_integration",
+    "domain": "Data",
+    "competency": "Diagnose Data Quality & Integration",
+    "short_label": "Data quality and integration",
+    "question": "How important is it that this person can spot data quality issues, explain what is wrong, and help connect data from different systems or sources?",
+    "in_practice": "Can diagnose missing, inconsistent, duplicated, or poorly joined data and work across systems to improve reliability."
+  },
+  {
+    "id": "data_strategy",
+    "domain": "Data",
+    "competency": "Design Data / Knowledge Strategy",
+    "short_label": "Data and knowledge strategy",
+    "question": "How important is it that this person can think beyond day-to-day reporting and help shape how data, documentation, and organisational knowledge should be organised for long-term use?",
+    "in_practice": "Can design a sensible structure for data, knowledge assets, and information flows so the organisation scales more effectively."
+  },
+  {
+    "id": "descriptive_dashboarding",
+    "domain": "Analytics",
+    "competency": "Descriptive Analysis & Dashboarding",
+    "short_label": "Analysis and dashboards",
+    "question": "How important is it that this person can turn business data into clear analysis, practical dashboards, and simple insights that managers can act on?",
+    "in_practice": "Can summarise trends, build useful reporting views, and present evidence clearly to non-technical stakeholders."
+  },
+  {
+    "id": "kpi_modelling",
+    "domain": "Analytics",
+    "competency": "KPI Analysis & Applied Modelling",
+    "short_label": "KPI analysis and modelling",
+    "question": "How important is it that this person can interpret KPIs properly, investigate performance drivers, and use applied modelling to support business decisions?",
+    "in_practice": "Can move from descriptive reporting into deeper analysis of drivers, trade-offs, and likely outcomes."
+  },
+  {
+    "id": "predictive_strategy",
+    "domain": "Analytics",
+    "competency": "Decision Systems & Predictive Strategy",
+    "short_label": "Predictive and decision strategy",
+    "question": "How important is it that this person can think ahead, use predictive approaches, and help design decision systems that improve future business actions?",
+    "in_practice": "Can frame forward-looking decisions, support scenario thinking, and design data-informed decision logic."
+  },
+  {
+    "id": "ai_productivity",
+    "domain": "AI",
+    "competency": "AI Productivity & Prompt Use",
+    "short_label": "AI productivity use",
+    "question": "How important is it that this person can use AI tools productively to speed up work, improve quality, and support everyday business tasks responsibly?",
+    "in_practice": "Can use AI well for drafting, analysis support, task acceleration, and first-pass work without over-relying on it."
+  },
+  {
+    "id": "ai_evaluation_workflow",
+    "domain": "AI",
+    "competency": "AI Evaluation & Workflow Integration",
+    "short_label": "AI workflow integration",
+    "question": "How important is it that this person can judge whether AI outputs are good enough and integrate AI into real business workflows rather than using it only as a novelty?",
+    "in_practice": "Can evaluate usefulness, fit, and risk of AI outputs, and redesign workflows so AI adds measurable value."
+  },
+  {
+    "id": "ai_governance_design",
+    "domain": "AI",
+    "competency": "AI Governance / Prompt Design / Decision Systems",
+    "short_label": "AI governance and decision design",
+    "question": "How important is it that this person can design strong prompts, define guardrails, and help shape how AI should be governed in business decisions?",
+    "in_practice": "Can set standards, guardrails, decision rules, and prompt logic so AI use is repeatable, safe, and aligned to business needs."
+  },
+  {
+    "id": "workflow_execution",
+    "domain": "Process",
+    "competency": "Workflow Execution & Task Coordination",
+    "short_label": "Workflow execution",
+    "question": "How important is it that this person can keep digital work moving by coordinating tasks, managing handoffs, and ensuring execution happens smoothly across teams?",
+    "in_practice": "Can turn plans into action, coordinate responsibilities, and maintain operational discipline across workstreams."
+  },
+  {
+    "id": "process_optimization",
+    "domain": "Process",
+    "competency": "Process Optimization & Automation",
+    "short_label": "Process optimization and automation",
+    "question": "How important is it that this person can improve inefficient processes and identify where automation can save time, reduce errors, or increase scale?",
+    "in_practice": "Can redesign workflows, remove friction, and introduce automation where it improves efficiency and control."
+  },
+  {
+    "id": "enterprise_transformation",
+    "domain": "Process",
+    "competency": "Enterprise Transformation & Systems Architecture",
+    "short_label": "Enterprise transformation",
+    "question": "How important is it that this person can think at enterprise level, connecting systems, functions, and change priorities to support digital transformation?",
+    "in_practice": "Can see cross-functional implications, system dependencies, and the bigger transformation roadmap."
+  },
+  {
+    "id": "team_reporting",
+    "domain": "Communication",
+    "competency": "Team Reporting & Professional Communication",
+    "short_label": "Professional reporting",
+    "question": "How important is it that this person can communicate clearly in reports, updates, and working discussions so that teams stay aligned and informed?",
+    "in_practice": "Can write and speak clearly, structure updates well, and communicate professionally across routine business settings."
+  },
+  {
+    "id": "stakeholder_influence",
+    "domain": "Communication",
+    "competency": "Stakeholder Communication & Influence",
+    "short_label": "Stakeholder influence",
+    "question": "How important is it that this person can manage stakeholders, explain ideas persuasively, and gain buy-in for digital or operational change?",
+    "in_practice": "Can tailor messages to stakeholders, influence decisions, and handle competing expectations."
+  },
+  {
+    "id": "executive_leadership",
+    "domain": "Communication",
+    "competency": "Executive Leadership, Branding & Negotiation",
+    "short_label": "Executive communication and negotiation",
+    "question": "How important is it that this person can operate with executive presence, represent the organisation well, and negotiate or influence at senior level?",
+    "in_practice": "Can communicate with senior leaders, frame decisions strategically, and represent the organisation with credibility."
+  },
+  {
+    "id": "ethics_privacy_evidence",
+    "domain": "Governance",
+    "competency": "Ethics, Privacy & Evidence Basics",
+    "short_label": "Ethics and evidence basics",
+    "question": "How important is it that this person understands ethical handling of data, respects privacy, and uses evidence properly rather than making unsupported claims?",
+    "in_practice": "Can recognise basic ethical and privacy obligations and grounds recommendations in evidence."
+  },
+  {
+    "id": "risk_bias_compliance",
+    "domain": "Governance",
+    "competency": "Risk, Bias & Compliance Evaluation",
+    "short_label": "Risk and compliance evaluation",
+    "question": "How important is it that this person can identify risks, challenge bias, and assess whether digital or AI-enabled work meets compliance expectations?",
+    "in_practice": "Can evaluate risks, spot bias or weak controls, and raise compliance concerns before they become problems."
+  },
+  {
+    "id": "responsible_ai_systems",
+    "domain": "Governance",
+    "competency": "Responsible AI, Governance & Compliance Systems",
+    "short_label": "Responsible AI systems",
+    "question": "How important is it that this person can help build responsible AI practices, governance routines, and compliance systems that the organisation can trust at scale?",
+    "in_practice": "Can help institutionalise responsible AI governance, monitoring, documentation, and compliance processes."
+  }
+]

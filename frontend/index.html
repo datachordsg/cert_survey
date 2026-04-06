@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>High-Value Individual Priority Survey</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <h1>High-Value Individual Priority Survey</h1>
+      <p>
+        This survey asks managers and business leaders what they most want from a
+        <strong>high-value individual</strong> in <strong>digital transformation</strong>
+        and <strong>corporate enablement</strong>.
+      </p>
+      <p>
+        You have <strong>100 points</strong> in total. Allocate the points across the 18 areas
+        below to show which capabilities matter most in the ideal person.
+      </p>
+    </header>
+
+    <section class="panel summary-bar">
+      <div>
+        <div class="summary-label">Points used</div>
+        <div id="pointsUsed" class="summary-number">0 / 100</div>
+      </div>
+      <div>
+        <div class="summary-label">Points remaining</div>
+        <div id="pointsRemaining" class="summary-number">100</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+      </div>
+    </section>
+
+    <section class="panel anchors">
+      <h2>How to answer</h2>
+      <p>
+        Think about the kind of person you would most value in your organisation when driving
+        digital transformation, improving business execution, and enabling managers and teams.
+      </p>
+      <ul>
+        <li><strong>Lower points:</strong> helpful, but not central to the role.</li>
+        <li><strong>Mid-range points:</strong> important working capability expected in strong performers.</li>
+        <li><strong>Higher points:</strong> critical differentiator in a high-impact, digitally capable professional.</li>
+      </ul>
+    </section>
+
+    <section id="questions" class="question-list"></section>
+
+    <section class="panel actions">
+      <div class="button-row">
+        <button id="resetBtn" class="secondary">Reset all points</button>
+        <button id="autoBalanceBtn" class="secondary">Distribute remaining equally</button>
+        <button id="submitBtn" class="primary">Submit survey</button>
+      </div>
+      <p id="statusMsg" class="status"></p>
+    </section>
+
+    <section id="resultsPanel" class="panel hidden">
+      <h2>Priority profile</h2>
+      <p>Your highest priorities for the ideal high-value individual are shown below.</p>
+      <div id="resultsList" class="results-list"></div>
+      <div class="button-row top-margin">
+        <button id="downloadJsonBtn" class="secondary">Download response JSON</button>
+        <button id="downloadCsvBtn" class="secondary">Download ranking CSV</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.APP_CONFIG = {
+      appsScriptUrl: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE"
+    };
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
