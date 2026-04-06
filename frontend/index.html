@@ -3,30 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>High-Value Individual Priority Survey</title>
+  <title>High-Value Individual Competency Needs Survey</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="container">
     <section class="hero card">
-      <h1>High-Value Individual Priority Survey</h1>
-      <p>This survey is about the ideal <strong>high-value individual</strong> your organisation would want for <strong>digital transformation</strong> and <strong>corporate enablement</strong>.</p>
-      <p>You have <strong>300 points</strong> in total. Please allocate those 300 points across the 18 capability areas below to show what matters most in that ideal person.</p>
+      <h1>High-Value Individual Competency Needs Survey</h1>
+      <p>This survey asks what you expect from an ideal <strong>high-value individual</strong> in <strong>digital transformation</strong> and <strong>corporate enablement</strong>.</p>
+      <p>Please describe, in your own words, what this person should <strong>do</strong>, <strong>possess</strong>, or <strong>demonstrate</strong> for each competency. The responses can later be analysed with an LLM to identify which modules and levels best match employer needs.</p>
     </section>
 
-    <section class="card sticky-summary">
-      <div class="summary-group">
+    <section class="card">
+      <h2>Organisation context</h2>
+      <div class="meta-grid">
         <div>
-          <div class="summary-label">Points used</div>
-          <div id="pointsUsed" class="summary-value">0 / 300</div>
+          <label for="industry">Company industry</label>
+          <input id="industry" type="text" placeholder="e.g. Banking, Healthcare, Manufacturing" />
         </div>
         <div>
-          <div class="summary-label">Points remaining</div>
-          <div id="pointsRemaining" class="summary-value">300</div>
-        </div>
-        <div class="progress-wrap">
-          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-          <div class="summary-note">The total must equal exactly 300 before submission.</div>
+          <label for="companySize">Company size</label>
+          <input id="companySize" type="text" placeholder="e.g. 1-50, 51-200, 201-1000, 1000+" />
         </div>
       </div>
     </section>
@@ -34,9 +31,9 @@
     <section class="card">
       <h2>How to answer</h2>
       <ul class="guidance-list">
-        <li>Give more points to the capabilities that are most critical in the ideal person.</li>
-        <li>Give fewer points to capabilities that are useful but less central.</li>
-        <li>Think in terms of business value, digital transformation impact, and enablement of teams and managers.</li>
+        <li>Write what a strong person in this role should be able to do in practice.</li>
+        <li>Focus on behaviours, skills, judgement, tools, outputs, and business impact.</li>
+        <li>You can write short bullet-style phrases or full sentences.</li>
       </ul>
     </section>
 
@@ -46,10 +43,9 @@
           <thead>
             <tr>
               <th class="col-num">#</th>
-              <th class="col-area">Capability area</th>
-              <th class="col-question">Manager question</th>
-              <th class="col-practice">What this looks like in practice</th>
-              <th class="col-points">Points</th>
+              <th class="col-area">Competency</th>
+              <th class="col-question">Open-ended question</th>
+              <th class="col-response">Your response</th>
             </tr>
           </thead>
           <tbody id="matrixBody"></tbody>
@@ -59,27 +55,16 @@
 
     <section class="card actions-card">
       <div class="button-row">
-        <button id="resetBtn" class="secondary" type="button">Reset all points</button>
-        <button id="autoBalanceBtn" class="secondary" type="button">Distribute remaining equally</button>
+        <button id="resetBtn" class="secondary" type="button">Clear all answers</button>
         <button id="submitBtn" class="primary" type="button">Submit survey</button>
       </div>
       <p id="statusMsg" class="status"></p>
-    </section>
-
-    <section id="resultsPanel" class="card hidden">
-      <h2>Final priority profile</h2>
-      <p>These are the priorities you placed on the ideal high-value individual.</p>
-      <div id="resultsList" class="results-list"></div>
-      <div class="button-row top-space">
-        <button id="downloadJsonBtn" class="secondary" type="button">Download response JSON</button>
-        <button id="downloadCsvBtn" class="secondary" type="button">Download ranking CSV</button>
-      </div>
     </section>
   </main>
 
   <script>
     window.APP_CONFIG = {
-      appsScriptUrl: "https://script.google.com/macros/s/AKfycbxu4Ual_xyEIRQR0xeUHzdDd_fiSire3zf_SCsCg1YTZvwwNLZvGMX3S491gstHeiMT/exec"
+      appsScriptUrl: "https://script.google.com/macros/s/AKfycby3nZj8w-XJdQvowQ5FksCYK63J4An7CacweT77mzkF6QMFXWIRS4hh1u7Uid9FmdFE/exec"
     };
   </script>
   <script src="app.js"></script>

@@ -1,35 +1,36 @@
-# High-Value Individual Priority Survey (Google Sheets + Matrix Layout)
+# High-Value Individual Competency Needs Survey
 
 This package contains:
-
-- `frontend/` — static site for GitHub Pages
-- `google_apps_script/` — Apps Script endpoint that stores responses in Google Sheets
+- `frontend/` – static HTML survey for GitHub Pages
+- `google_apps_script/` – Google Apps Script endpoint that writes responses to Google Sheets
 
 ## What changed
-- No respondent profile section
-- Questions are embedded directly in `app.js`
-- Survey is displayed as a matrix table for faster answering
-- Respondents allocate exactly 300 points across 18 capability areas
+- Questions are now **open-ended** instead of point allocation
+- Added **company industry** and **company size** fields
+- Google Sheet output is **one response per row**
+- Each competency is saved as its **own column** in `SurveyResponses`
 
-## Deploy the frontend
-1. Upload the files in `frontend/` to a GitHub repository.
-2. Enable GitHub Pages for that repository.
-3. Open `frontend/index.html` and replace the placeholder Apps Script URL with your deployed web app URL.
+## Google Sheet output format
+The `SurveyResponses` tab will contain:
+- `response_id`
+- `submitted_at`
+- `industry`
+- `company_size`
+- 18 competency columns
 
-## Deploy the Google Apps Script endpoint
-1. Create a new Google Apps Script project.
-2. Paste in `google_apps_script/Code.gs`.
-3. Add the `appsscript.json` manifest.
-4. In Script Properties, add `SPREADSHEET_ID` with the Google Sheet ID.
-5. Deploy as a web app with access allowed to anyone with the link.
+## Setup
+1. Create a Google Sheet.
+2. Open **Extensions > Apps Script**.
+3. Paste `google_apps_script/Code.gs` into the project.
+4. Add a Script Property named `SPREADSHEET_ID` with your Google Sheet ID.
+5. Deploy the script as a **Web app**:
+   - Execute as: **Me**
+   - Who has access: **Anyone**
+6. Copy the deployed `/exec` URL.
+7. Open `frontend/index.html` and replace:
+   - `PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE`
+   with your Apps Script URL.
+8. Upload the `frontend/` files to GitHub and enable GitHub Pages.
 
-## Google Sheets tabs created automatically
-- `SurveyResponses`
-- `Rankings`
-
-
-## Google Sheets output layout
-This version saves **one submission per row** in the `SurveyResponses` sheet.
-Each survey question becomes its **own column header**, and the respondent's allocated score is written directly into that cell.
-
-Important: if your spreadsheet already has an older `SurveyResponses` sheet from a previous version, rename or delete that sheet before testing this version. The new layout will then be created automatically on the first successful submission.
+## Important
+If you already have an older `SurveyResponses` tab from a previous version, rename or delete it before first submission.
