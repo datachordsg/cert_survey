@@ -26,3 +26,10 @@ This package contains:
 ## Google Sheets tabs created automatically
 - `SurveyResponses`
 - `Rankings`
+
+
+## Google Sheets output layout
+This version saves **one submission per row** in the `SurveyResponses` sheet.
+Each survey question becomes its **own column header**, and the respondent's allocated score is written directly into that cell.
+
+Important: if your spreadsheet already has an older `SurveyResponses` sheet from a previous version, rename or delete that sheet before testing this version. The new layout will then be created automatically on the first successful submission.

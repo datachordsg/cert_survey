@@ -315,7 +315,7 @@ function csvEscape(value) {
 }
 
 function downloadResponseJson() {
-  if (getUsedPoints() !== 100) {
+  if (getUsedPoints() !== 300) {
     setStatus('Set the total to 300 before downloading the response.', false);
     return;
   }
@@ -324,7 +324,7 @@ function downloadResponseJson() {
 }
 
 function downloadRankingCsv() {
-  if (getUsedPoints() !== 100) {
+  if (getUsedPoints() !== 300) {
     setStatus('Set the total to 300 before downloading the ranking.', false);
     return;
   }
@@ -361,7 +361,7 @@ function autoBalance() {
 }
 
 async function submitSurvey() {
-  if (getUsedPoints() !== 100) {
+  if (getUsedPoints() !== 300) {
     setStatus('The total must equal exactly 300 points before submission.', false);
     return;
   }

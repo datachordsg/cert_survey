@@ -1,3 +1,4 @@
+
 function doGet() {
   return ContentService
     .createTextOutput(JSON.stringify({
@@ -23,45 +24,19 @@ function doPost(e) {
     validatePayload_(payload);
 
     var ss = SpreadsheetApp.openById(sheetId);
-    var responsesSheet = getOrCreateResponsesSheet_(ss);
-    var rankingsSheet = getOrCreateRankingsSheet_(ss);
+    var responsesSheet = getOrCreateResponsesSheet_(ss, payload.allocations);
 
     var responseId = Utilities.getUuid();
     var submittedAt = payload.submitted_at || new Date().toISOString();
-    var respondent = payload.respondent || {};
+    var totalPoints = Number(payload.total_points || 0);
 
-    responsesSheet.appendRow([
-      responseId,
-      submittedAt,
-      payload.survey_name || '',
-      payload.target_profile || '',
-      payload.total_points || 0,
-      respondent.name || '',
-      respondent.email || '',
-      respondent.company || '',
-      respondent.role || '',
-      respondent.industry || '',
-      respondent.country || '',
-      JSON.stringify(payload.allocations || []),
-      JSON.stringify(payload.ranked || [])
-    ]);
-
-    var ranked = payload.ranked || [];
-    ranked.forEach(function(item, index) {
-      rankingsSheet.appendRow([
-        responseId,
-        submittedAt,
-        index + 1,
-        item.id || '',
-        item.domain || '',
-        item.competency || '',
-        item.short_label || '',
-        item.points || 0,
-        respondent.company || '',
-        respondent.role || '',
-        respondent.country || ''
-      ]);
+    var row = [responseId, submittedAt];
+    payload.allocations.forEach(function(item) {
+      row.push(Number(item.points || 0));
     });
+    row.push(totalPoints);
+
+    responsesSheet.appendRow(row);
 
     return ContentService
       .createTextOutput(JSON.stringify({
@@ -93,42 +68,75 @@ function extractPayload_(e) {
 }
 
 function validatePayload_(payload) {
-  if (!payload || !payload.allocations || !payload.ranked) {
+  if (!payload || !payload.allocations || !Array.isArray(payload.allocations)) {
     throw new Error('Payload is incomplete.');
   }
-  if (payload.total_points !== 300) {
+  if (Number(payload.total_points) !== 300) {
     throw new Error('Total points must equal 300.');
   }
-  if (!Array.isArray(payload.allocations) || payload.allocations.length !== 18) {
+  if (payload.allocations.length !== 18) {
     throw new Error('Expected 18 competency allocations.');
   }
+
+  var computedTotal = payload.allocations.reduce(function(sum, item) {
+    return sum + Number(item.points || 0);
+  }, 0);
+
+  if (computedTotal !== 300) {
+    throw new Error('The submitted scores do not add up to 300.');
+  }
 }
 
-function getOrCreateResponsesSheet_(ss) {
+function getOrCreateResponsesSheet_(ss, allocations) {
   var name = 'SurveyResponses';
   var sheet = ss.getSheetByName(name);
+  var expectedHeader = buildHeader_(allocations);
+
   if (!sheet) {
     sheet = ss.insertSheet(name);
-    sheet.appendRow([
-      'response_id', 'submitted_at', 'survey_name', 'target_profile', 'total_points',
-      'name', 'email', 'company', 'role', 'industry', 'country',
-      'allocations_json', 'ranked_json'
-    ]);
-    sheet.setFrozenRows(1);
+    sheet.appendRow(expectedHeader);
+    styleHeader_(sheet, expectedHeader.length);
+    return sheet;
   }
+
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(expectedHeader);
+    styleHeader_(sheet, expectedHeader.length);
+    return sheet;
+  }
+
+  var actualHeader = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  if (!headersMatch_(actualHeader, expectedHeader)) {
+    throw new Error('The SurveyResponses sheet still uses the old layout. Rename or delete that sheet, then submit again so the new question-column layout can be created.');
+  }
+
   return sheet;
 }
 
-function getOrCreateRankingsSheet_(ss) {
-  var name = 'Rankings';
-  var sheet = ss.getSheetByName(name);
-  if (!sheet) {
-    sheet = ss.insertSheet(name);
-    sheet.appendRow([
-      'response_id', 'submitted_at', 'rank', 'competency_id', 'domain',
-      'competency', 'short_label', 'points', 'company', 'role', 'country'
-    ]);
-    sheet.setFrozenRows(1);
+function buildHeader_(allocations) {
+  var headers = ['response_id', 'submitted_at'];
+  allocations.forEach(function(item, index) {
+    var label = item.question || item.competency || item.short_label || ('Question ' + (index + 1));
+    headers.push(label);
+  });
+  headers.push('total_points');
+  return headers;
+}
+
+function headersMatch_(actualHeader, expectedHeader) {
+  if (actualHeader.length !== expectedHeader.length) {
+    return false;
   }
-  return sheet;
+  for (var i = 0; i < expectedHeader.length; i++) {
+    if (String(actualHeader[i]) !== String(expectedHeader[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function styleHeader_(sheet, columnCount) {
+  sheet.setFrozenRows(1);
+  sheet.getRange(1, 1, 1, columnCount).setFontWeight('bold').setWrap(true);
+  sheet.autoResizeColumns(1, Math.min(columnCount, 5));
 }
