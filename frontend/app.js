@@ -165,10 +165,10 @@ function getUsedPoints() {
 
 function updateSummary() {
   const used = getUsedPoints();
-  const remaining = 100 - used;
-  document.getElementById('pointsUsed').textContent = `${used} / 100`;
+  const remaining = 300 - used;
+  document.getElementById('pointsUsed').textContent = `${used} / 300`;
   document.getElementById('pointsRemaining').textContent = String(remaining);
-  document.getElementById('progressFill').style.width = `${Math.min(used, 100)}%`;
+  document.getElementById('progressFill').style.width = `${Math.min((used / 300) * 100, 100)}%`;
 }
 
 function renderMatrix() {
@@ -189,10 +189,10 @@ function renderMatrix() {
       <td>
         <div class="points-control">
           <button type="button" data-action="minus" data-id="${escapeHtml(q.id)}">−</button>
-          <input class="points-input" type="number" min="0" max="100" step="1" value="${state.allocations[q.id]}" data-id="${escapeHtml(q.id)}" />
+          <input class="points-input" type="number" min="0" max="300" step="1" value="${state.allocations[q.id]}" data-id="${escapeHtml(q.id)}" />
           <button type="button" data-action="plus" data-id="${escapeHtml(q.id)}">+</button>
         </div>
-        <div class="points-hint">Part of the 100-point total</div>
+        <div class="points-hint">Part of the 300-point total</div>
       </td>
     `;
     body.appendChild(tr);
@@ -218,7 +218,7 @@ function applyValue(id, requested) {
 
   const current = state.allocations[id] || 0;
   const usedExcludingCurrent = getUsedPoints() - current;
-  const maxAllowed = 100 - usedExcludingCurrent;
+  const maxAllowed = 300 - usedExcludingCurrent;
   if (next > maxAllowed) next = Math.max(maxAllowed, 0);
 
   state.allocations[id] = next;
@@ -316,7 +316,7 @@ function csvEscape(value) {
 
 function downloadResponseJson() {
   if (getUsedPoints() !== 100) {
-    setStatus('Set the total to 100 before downloading the response.', false);
+    setStatus('Set the total to 300 before downloading the response.', false);
     return;
   }
   const payload = buildPayload();
@@ -325,7 +325,7 @@ function downloadResponseJson() {
 
 function downloadRankingCsv() {
   if (getUsedPoints() !== 100) {
-    setStatus('Set the total to 100 before downloading the ranking.', false);
+    setStatus('Set the total to 300 before downloading the ranking.', false);
     return;
   }
   const rows = [['rank', 'short_label', 'competency', 'domain', 'points']];
@@ -337,7 +337,7 @@ function downloadRankingCsv() {
 }
 
 function autoBalance() {
-  const remaining = 100 - getUsedPoints();
+  const remaining = 300 - getUsedPoints();
   if (remaining <= 0) {
     setStatus('No remaining points to distribute.', false);
     return;
@@ -362,7 +362,7 @@ function autoBalance() {
 
 async function submitSurvey() {
   if (getUsedPoints() !== 100) {
-    setStatus('The total must equal exactly 100 points before submission.', false);
+    setStatus('The total must equal exactly 300 points before submission.', false);
     return;
   }
 

@@ -96,8 +96,8 @@ function validatePayload_(payload) {
   if (!payload || !payload.allocations || !payload.ranked) {
     throw new Error('Payload is incomplete.');
   }
-  if (payload.total_points !== 100) {
-    throw new Error('Total points must equal 100.');
+  if (payload.total_points !== 300) {
+    throw new Error('Total points must equal 300.');
   }
   if (!Array.isArray(payload.allocations) || payload.allocations.length !== 18) {
     throw new Error('Expected 18 competency allocations.');

@@ -9,7 +9,7 @@ This package contains:
 - No respondent profile section
 - Questions are embedded directly in `app.js`
 - Survey is displayed as a matrix table for faster answering
-- Respondents allocate exactly 100 points across 18 capability areas
+- Respondents allocate exactly 300 points across 18 capability areas
 
 ## Deploy the frontend
 1. Upload the files in `frontend/` to a GitHub repository.
