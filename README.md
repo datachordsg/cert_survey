@@ -117,6 +117,3 @@ That lets you validate this chain:
 - Ethics and evidence basics
 - Risk and compliance evaluation
 - Responsible AI systems
-
-
-Updated version: respondent profile fields removed; questions are embedded directly in app.js so they appear even when opening index.html locally.
