@@ -32,8 +32,29 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-function buildPrompt(competency) {
-  return `What do you expect this high-value individual to do and possess to meet the competency "${competency}" in the context of digital transformation and corporate enablement?`;
+const PROMPTS = {
+  d1: 'In your organisation, what would you expect this person to do well when preparing, checking, and organising structured data for use?',
+  d2: 'In your organisation, what would you expect this person to do well when spotting data quality issues and combining data from different sources?',
+  d3: 'In your organisation, what would you expect this person to do well when shaping a clear data or knowledge strategy for business improvement?',
+  a1: 'In your organisation, what would you expect this person to do well when analysing data and presenting clear dashboards or reports?',
+  a2: 'In your organisation, what would you expect this person to do well when using KPIs, analysis, or models to support decisions?',
+  a3: 'In your organisation, what would you expect this person to do well when building decision systems or using predictive thinking to guide action?',
+  ai1: 'In your organisation, what would you expect this person to do well when using AI tools to improve productivity and quality of work?',
+  ai2: 'In your organisation, what would you expect this person to do well when evaluating AI outputs and fitting AI into real work processes?',
+  ai3: 'In your organisation, what would you expect this person to do well when designing prompts, managing AI risks, and using AI for better decisions?',
+  p1: 'In your organisation, what would you expect this person to do well when managing workflows, tasks, and day-to-day coordination?',
+  p2: 'In your organisation, what would you expect this person to do well when improving processes and introducing automation?',
+  p3: 'In your organisation, what would you expect this person to do well when supporting wider business transformation and system-level change?',
+  c1: 'In your organisation, what would you expect this person to do well when reporting clearly and communicating professionally with teams?',
+  c2: 'In your organisation, what would you expect this person to do well when engaging stakeholders and influencing action across the business?',
+  c3: 'In your organisation, what would you expect this person to do well when communicating with senior leaders, representing the business, or handling negotiation?',
+  g1: 'In your organisation, what would you expect this person to do well when handling ethics, privacy, and evidence responsibly?',
+  g2: 'In your organisation, what would you expect this person to do well when reviewing risk, bias, and compliance concerns?',
+  g3: 'In your organisation, what would you expect this person to do well when putting responsible AI, governance, and compliance into practice across the organisation?'
+};
+
+function buildPrompt(q) {
+  return PROMPTS[q.id] || `In your organisation, what would you expect this person to do well in relation to ${q.competency}?`;
 }
 
 function renderMatrix() {
@@ -48,7 +69,7 @@ function renderMatrix() {
         <div class="domain-tag">${escapeHtml(q.domain)}</div>
         <div class="area-title">${escapeHtml(q.competency)}</div>
       </td>
-      <td><div class="prompt-box">${escapeHtml(buildPrompt(q.competency))}</div></td>
+      <td><div class="prompt-box">${escapeHtml(buildPrompt(q))}</div></td>
       <td>
         <textarea data-id="${escapeHtml(q.id)}" placeholder="Enter your expectations for this competency..."></textarea>
       </td>
@@ -74,7 +95,7 @@ function buildPayload() {
     id: q.id,
     domain: q.domain,
     competency: q.competency,
-    question: buildPrompt(q.competency),
+    question: buildPrompt(q),
     response: state.responses[q.id] || ''
   }));
 
