@@ -114,8 +114,8 @@ function setStatus(message, type = '') {
 
 function renderTools() {
   toolGrid.innerHTML = TOOL_OPTIONS.map(tool => `
-    <label class="choice-pill choice-pill--tool">
-      <input type="checkbox" name="toolsSelected" value="${tool}" ${tool === 'ChatGPT' ? '' : ''} />
+    <label class="tool-button">
+      <input type="checkbox" name="toolsSelected" value="${tool}" />
       <span>${tool}</span>
     </label>
   `).join('');
@@ -160,10 +160,10 @@ function renderCompetencySections() {
   sectionsWrap.innerHTML = COMPETENCIES.map((name, idx) => {
     const key = slugify(name);
     const focusHtml = AREA_CONFIG[name].focuses.map((item, itemIdx) => `
-      <label class="focus-option">
+      <label class="focus-button">
         <input type="checkbox" name="${key}_focus" value="${item}" />
-        <span class="focus-option__tick">${String(itemIdx + 1).padStart(2, '0')}</span>
-        <span>${item}</span>
+        <span class="focus-button__index">${String(itemIdx + 1).padStart(2, '0')}</span>
+        <span class="focus-button__text">${item}</span>
       </label>
     `).join('');
 
