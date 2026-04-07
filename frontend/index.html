@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="styles.css" />
   <script>
     window.APP_CONFIG = {
-      appsScriptUrl: "https://script.google.com/macros/s/AKfycbzDRz5iZHG6bvQ3vmmDFomwgNqqtq2CfzOxwkgNUTiyeuRqpr43cYZYZkEdz3mwEgbn/exec"
+      appsScriptUrl: "https://script.google.com/macros/s/AKfycbwhU1L4XZPDp3idVsSk_cKdAaU41SDYsrv7O7gPdnXt21w4GY2HKkx0D8UX-VJTQHv1/exec"
     };
   </script>
 </head>
@@ -30,12 +30,12 @@
     <section class="hero-panel">
       <div class="hero-copy">
         <div class="hero-kicker">Designed for digital transformation hiring insight</div>
-        <h1>What would hiring managers actually ask in an interview?</h1>
-        <p class="hero-lead">Use this survey to capture real interview questions across five capability areas, while still identifying the single area that matters most for the hire.</p>
+        <h1>What do hiring managers most want to assess?</h1>
+        <p class="hero-lead">This version uses structured choices instead of open text, making it faster to complete while still helping identify which modules and learning levels best match employer needs.</p>
       </div>
       <div class="hero-sidecard">
         <div class="sidecard-label">Survey instruction</div>
-        <p>If you were the hiring manager, what interview questions would you ask the candidate in this area? Please write the questions as you would ask them in the interview. You may also include questions you have in mind, even if you might not ask them exactly in this form. Please separate each question clearly and keep your questions mainly focused on the selected area.</p>
+        <p>Choose the areas that matter most, then select the behaviours or capabilities you would most want to assess in a candidate. Please answer all five areas. For each area, choose up to three focus items and the level you would expect from a strong hire.</p>
       </div>
     </section>
 
@@ -45,8 +45,8 @@
           <div class="rail-title">How this works</div>
           <ul class="rail-list">
             <li>Share your organisation profile.</li>
-            <li>Select the one capability area that is your top priority.</li>
-            <li>Answer all five sections with the interview questions you would actually use.</li>
+            <li>Select the one area that is your top priority.</li>
+            <li>Answer all five areas using structured choices.</li>
           </ul>
         </div>
         <div class="rail-card__section metrics-block">
@@ -55,17 +55,17 @@
             <span class="metric__label">capability areas</span>
           </div>
           <div class="metric">
-            <span class="metric__value">1</span>
-            <span class="metric__label">top priority</span>
+            <span class="metric__value">3</span>
+            <span class="metric__label">focus items max per area</span>
           </div>
           <div class="metric">
-            <span class="metric__value">∞</span>
-            <span class="metric__label">question depth</span>
+            <span class="metric__value">2</span>
+            <span class="metric__label">ratings per area</span>
           </div>
         </div>
         <div class="rail-card__section checklist-block">
-          <div class="rail-title">Best response style</div>
-          <div class="micro-note">Please separate each question clearly. Putting each question on a new line is helpful. Keep each section focused on the named area rather than mixing multiple themes into one question.</div>
+          <div class="rail-title">Response guidance</div>
+          <div class="micro-note">Select the options that best reflect what you would want to test in an interview. Keep your choices anchored to the named area rather than a general role description.</div>
         </div>
       </aside>
 
@@ -76,7 +76,7 @@
               <div>
                 <span class="section-tag">Section 1</span>
                 <h2>Share your organisation profile</h2>
-                <p>This helps us understand your business context when reviewing responses.</p>
+                <p>This helps us interpret hiring expectations in business context.</p>
               </div>
             </div>
 
@@ -119,8 +119,8 @@
             <div class="section-head">
               <div>
                 <span class="section-tag">Section 2</span>
-                <h2>Top hiring priority</h2>
-                <p>Among the five areas below, choose the one that is your top priority for this hire.</p>
+                <h2>Top priority</h2>
+                <p>Among these five areas, choose the one that is your top priority when hiring this person.</p>
               </div>
             </div>
             <div class="choice-grid choice-grid--priority" id="priorityGrid"></div>
@@ -130,11 +130,25 @@
             <div class="section-head">
               <div>
                 <span class="section-tag">Section 3</span>
-                <h2>Interview question areas</h2>
-                <p>Answer all five areas. Your selected top priority will be highlighted below.</p>
+                <h2>Interview assessment priorities</h2>
+                <p>Answer all five areas. For each one, rate its importance, choose up to three things you would most want to assess, and indicate the level you would expect.</p>
               </div>
             </div>
             <div id="competencySections" class="competency-stack"></div>
+          </section>
+
+          <section class="section-card section-card--final">
+            <div class="section-head">
+              <div>
+                <span class="section-tag">Optional</span>
+                <h2>Anything else?</h2>
+                <p>Add anything important that is not captured by the structured options above.</p>
+              </div>
+            </div>
+            <label class="field-card field-card--full">
+              <span class="field-label">Additional comments</span>
+              <textarea id="additionalComments" rows="5" placeholder="Optional"></textarea>
+            </label>
           </section>
 
           <div class="submit-strip">
@@ -148,7 +162,6 @@
     </main>
   </div>
 
-
   <div id="submissionOverlay" class="submission-overlay" hidden aria-live="polite" aria-busy="true">
     <div class="submission-overlay__backdrop"></div>
     <div class="submission-overlay__content">
@@ -158,9 +171,7 @@
         <div class="scene3d__ring scene3d__ring--two"></div>
         <div class="scene3d__ring scene3d__ring--three"></div>
         <div class="scene3d__core"></div>
-        <div class="scene3d__particles">
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
+        <div class="scene3d__particles"><span></span><span></span><span></span><span></span><span></span><span></span></div>
         <div class="scene3d__grid"></div>
       </div>
       <div class="submission-overlay__text">

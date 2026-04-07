@@ -1,43 +1,34 @@
-# Hiring Manager Competency Survey — Premium Microsite Version
+# Hiring Manager Competency Survey (MCQ Version)
 
-This package keeps the same Google Sheets backend structure, but upgrades the frontend into a more premium, polished microsite-style survey.
+This package contains a premium single-page survey frontend for GitHub Pages and a Google Apps Script backend that writes responses to Google Sheets.
 
-## What this version includes
-- a more refined visual design
-- one first-and-foremost priority selection across the 5 areas
-- responses for all 5 capability areas
-- multi-select tools field including `Others`
-- one Google Sheets row per submission
+## What changed in this version
+- Replaces open-ended interview-question boxes with structured selections
+- Respondents answer **all 5 competency areas**
+- For each area, respondents provide:
+  - importance rating
+  - up to 3 focus items they would most want to assess
+  - expected level rating
+- Keeps:
+  - organisation profile
+  - tools selection
+  - top priority selection
+  - premium microsite styling
+  - submission overlay and thank-you message
 
-## Frontend setup
-Upload the contents of the `frontend` folder to GitHub Pages.
-
-## Google Apps Script setup
-1. Open your Google Sheet.
-2. Go to **Extensions > Apps Script**.
-3. Paste `google_apps_script/Code.gs` into Apps Script.
-4. Use `google_apps_script/appsscript.json` if you need the manifest.
-5. Add a Script Property named `SPREADSHEET_ID` with your Google Sheet ID.
-6. Deploy as a **Web app**:
+## Setup
+1. Create or choose a Google Sheet.
+2. Open **Extensions → Apps Script** from that sheet.
+3. Replace the code in `Code.gs` with the contents of `google_apps_script/Code.gs`.
+4. Make sure the manifest matches `google_apps_script/appsscript.json`.
+5. In Apps Script **Project Settings**, add a script property:
+   - Key: `SPREADSHEET_ID`
+   - Value: your Google Sheet ID
+6. Deploy the Apps Script as a **Web app**:
    - Execute as: **Me**
    - Who has access: **Anyone**
-7. Copy the `/exec` URL.
-8. Update `window.APP_CONFIG.appsScriptUrl` in `frontend/index.html` if needed.
-
-## Google Sheet output columns
-- response_id
-- submitted_at
-- industry
-- company_size
-- tools_selected
-- other_tool
-- first_priority
-- analytics_or_business_intelligence_questions
-- use_of_ai_questions
-- proficiency_in_tools_questions
-- soft_skills_and_communication_questions
-- governance_questions
-- submitted_at_client
+7. Copy the `/exec` URL and place it in `frontend/index.html` if needed.
+8. Upload the contents of the `frontend/` folder to GitHub and enable GitHub Pages.
 
 ## Important
-If your current `SurveyResponses` tab was created from an older format, rename or delete it before testing this version.
+If your current sheet already has a `SurveyResponses` tab from an older version, rename or delete it before testing this version so the new header can be created.

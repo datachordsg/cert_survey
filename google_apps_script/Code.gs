@@ -19,75 +19,78 @@ function doPost(e) {
       toolsAsText_(payload.toolsSelected),
       valueOrBlank_(payload.otherTool),
       valueOrBlank_(payload.firstPriority),
-      valueOrBlank_(payload.analyticsQuestions),
-      valueOrBlank_(payload.aiQuestions),
-      valueOrBlank_(payload.toolsQuestions),
-      valueOrBlank_(payload.softSkillsQuestions),
-      valueOrBlank_(payload.governanceQuestions),
+      valueOrBlank_(payload.analytics_or_business_intelligence_importance),
+      listAsText_(payload.analytics_or_business_intelligence_focus),
+      valueOrBlank_(payload.analytics_or_business_intelligence_level),
+      valueOrBlank_(payload.use_of_ai_importance),
+      listAsText_(payload.use_of_ai_focus),
+      valueOrBlank_(payload.use_of_ai_level),
+      valueOrBlank_(payload.proficiency_in_tools_importance),
+      listAsText_(payload.proficiency_in_tools_focus),
+      valueOrBlank_(payload.proficiency_in_tools_level),
+      valueOrBlank_(payload.soft_skills_and_communication_importance),
+      listAsText_(payload.soft_skills_and_communication_focus),
+      valueOrBlank_(payload.soft_skills_and_communication_level),
+      valueOrBlank_(payload.governance_importance),
+      listAsText_(payload.governance_focus),
+      valueOrBlank_(payload.governance_level),
+      valueOrBlank_(payload.additionalComments),
       valueOrBlank_(payload.submittedAtClient)
     ];
 
-    validatePayload_(row);
+    validatePayload_(payload, row);
     sheet.appendRow(row);
 
-    return jsonResponse_({
-      status: 'success',
-      message: 'Response saved successfully.'
-    });
+    return jsonResponse_({ status: 'success', message: 'Response saved successfully.' });
   } catch (err) {
-    return jsonResponse_({
-      status: 'error',
-      message: err.message
-    });
+    return jsonResponse_({ status: 'error', message: err.message });
   }
 }
 
-function validatePayload_(row) {
+function validatePayload_(payload, row) {
   if (!row[2]) throw new Error('Industry is required.');
   if (!row[3]) throw new Error('Company size is required.');
   if (!row[4]) throw new Error('At least one tool must be selected.');
   if (row[4].indexOf('Others') !== -1 && !row[5]) throw new Error('Please specify the other tool.');
-  if (!row[6]) throw new Error('First priority is required.');
-  if (!row[7]) throw new Error('Analytics or Business Intelligence questions are required.');
-  if (!row[8]) throw new Error('Use of AI questions are required.');
-  if (!row[9]) throw new Error('Proficiency in Tools questions are required.');
-  if (!row[10]) throw new Error('Soft Skills and Communication questions are required.');
-  if (!row[11]) throw new Error('Governance questions are required.');
+  if (!row[6]) throw new Error('Top priority is required.');
+
+  var areas = [
+    'analytics_or_business_intelligence',
+    'use_of_ai',
+    'proficiency_in_tools',
+    'soft_skills_and_communication',
+    'governance'
+  ];
+
+  areas.forEach(function(area) {
+    if (!valueOrBlank_(payload[area + '_importance'])) throw new Error(area + ' importance is required.');
+    var focus = payload[area + '_focus'];
+    if (!Array.isArray(focus) || !focus.length) throw new Error(area + ' focus selection is required.');
+    if (focus.length > 3) throw new Error(area + ' allows up to 3 focus selections.');
+    if (!valueOrBlank_(payload[area + '_level'])) throw new Error(area + ' expected level is required.');
+  });
 }
 
 function getOrCreateResponsesSheet_() {
   var spreadsheetId = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
-  if (!spreadsheetId) {
-    throw new Error('SPREADSHEET_ID script property is missing.');
-  }
-
+  if (!spreadsheetId) throw new Error('SPREADSHEET_ID script property is missing.');
   var ss = SpreadsheetApp.openById(spreadsheetId);
   var sheet = ss.getSheetByName('SurveyResponses');
-  if (!sheet) {
-    sheet = ss.insertSheet('SurveyResponses');
-  }
+  if (!sheet) sheet = ss.insertSheet('SurveyResponses');
   return sheet;
 }
 
 function ensureHeader_(sheet) {
   if (sheet.getLastRow() > 0) return;
-
   var header = [
-    'response_id',
-    'submitted_at',
-    'industry',
-    'company_size',
-    'tools_selected',
-    'other_tool',
-    'first_priority',
-    'analytics_or_business_intelligence_questions',
-    'use_of_ai_questions',
-    'proficiency_in_tools_questions',
-    'soft_skills_and_communication_questions',
-    'governance_questions',
-    'submitted_at_client'
+    'response_id','submitted_at','industry','company_size','tools_selected','other_tool','first_priority',
+    'analytics_or_business_intelligence_importance','analytics_or_business_intelligence_focus','analytics_or_business_intelligence_level',
+    'use_of_ai_importance','use_of_ai_focus','use_of_ai_level',
+    'proficiency_in_tools_importance','proficiency_in_tools_focus','proficiency_in_tools_level',
+    'soft_skills_and_communication_importance','soft_skills_and_communication_focus','soft_skills_and_communication_level',
+    'governance_importance','governance_focus','governance_level',
+    'additional_comments','submitted_at_client'
   ];
-
   sheet.appendRow(header);
   sheet.getRange(1, 1, 1, header.length).setFontWeight('bold');
   sheet.setFrozenRows(1);
@@ -98,13 +101,14 @@ function valueOrBlank_(value) {
   return value == null ? '' : String(value).trim();
 }
 
-function jsonResponse_(obj) {
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+function toolsAsText_(value) {
+  return Array.isArray(value) ? value.map(valueOrBlank_).filter(String).join(' | ') : valueOrBlank_(value);
 }
 
-function toolsAsText_(value) {
-  if (Array.isArray(value)) return value.map(valueOrBlank_).filter(String).join(' | ');
-  return valueOrBlank_(value);
+function listAsText_(value) {
+  return Array.isArray(value) ? value.map(valueOrBlank_).filter(String).join(' | ') : valueOrBlank_(value);
+}
+
+function jsonResponse_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }

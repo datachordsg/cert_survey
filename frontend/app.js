@@ -12,15 +12,84 @@ const TOOL_OPTIONS = [
   'Perplexity', 'AnythingLLM', 'Zapier AI', 'Others'
 ];
 
-const AREA_DESCRIPTIONS = {
-  'Analytics or Business Intelligence': 'Focus on data use, insight generation, business interpretation, and decision support.',
-  'Use of AI': 'Focus on how candidates use, assess, or apply AI in work and decision contexts.',
-  'Proficiency in Tools': 'Focus on practical use of software, platforms, technical environments, or work tools.',
-  'Soft Skills and Communication': 'Focus on stakeholder engagement, teamwork, influence, communication, and change support.',
-  'Governance': 'Focus on controls, responsibility, policy, compliance, ethics, and risk-aware use of digital capabilities.'
+const AREA_CONFIG = {
+  'Analytics or Business Intelligence': {
+    description: 'Data use, insight generation, interpretation, and decision support.',
+    focuses: [
+      'Identify the right business questions to investigate with data',
+      'Interpret KPIs, dashboards, and trends in a meaningful way',
+      'Spot data quality issues that could distort analysis',
+      'Translate analysis into recommendations for management',
+      'Explain insights clearly to non-technical stakeholders',
+      'Find root causes behind performance or process problems',
+      'Measure whether a business change actually improved results'
+    ]
+  },
+  'Use of AI': {
+    description: 'How AI is applied, judged, and governed in real work situations.',
+    focuses: [
+      'Judge whether AI output is reliable enough to use',
+      'Choose when AI should or should not be used',
+      'Use AI to improve productivity in real workflows',
+      'Write or refine prompts to get useful output',
+      'Explain AI limitations to non-technical stakeholders',
+      'Manage risks created by AI use in business settings',
+      'Evaluate whether AI is actually improving work quality'
+    ]
+  },
+  'Proficiency in Tools': {
+    description: 'Practical use of platforms, software, and technical tools in the role.',
+    focuses: [
+      'Use core digital tools confidently in daily work',
+      'Learn and apply a new tool quickly when needed',
+      'Choose the right tool for a task or business need',
+      'Connect data or workflows across different tools',
+      'Automate repetitive work with existing tools',
+      'Help teams adopt tools effectively in practice',
+      'Assess whether a tool is creating value or unnecessary complexity'
+    ]
+  },
+  'Soft Skills and Communication': {
+    description: 'Influence, collaboration, stakeholder engagement, and communication.',
+    focuses: [
+      'Explain technical issues clearly to non-technical stakeholders',
+      'Influence action without relying on formal authority',
+      'Handle resistance to change or digital adoption',
+      'Align technical and business teams around priorities',
+      'Present recommendations in a way that drives action',
+      'Navigate difficult stakeholder conversations constructively',
+      'Turn a vague business issue into a clear action plan'
+    ]
+  },
+  'Governance': {
+    description: 'Risk, control, responsible use, compliance, and accountability.',
+    focuses: [
+      'Apply responsible and practical governance in digital work',
+      'Balance innovation with compliance and control',
+      'Identify risks in data, AI, or automated workflows',
+      'Handle data access, privacy, and accountability appropriately',
+      'Put practical checks in place before rollout',
+      'Recognise when a digital solution creates ethical concerns',
+      'Advise leadership on responsible digital or AI adoption'
+    ]
+  }
 };
 
-const PROMPT = 'If you were the hiring manager, what interview questions would you ask the candidate in this area? Please write the questions as you would ask them in the interview. You may also include questions you have in mind, even if you might not ask them exactly in this form. Please separate each question clearly and keep your questions mainly focused on the selected area.';
+const IMPORTANCE_SCALE = [
+  '1 — Not important',
+  '2 — Slightly important',
+  '3 — Moderately important',
+  '4 — Very important',
+  '5 — Critical'
+];
+
+const LEVEL_SCALE = [
+  '1 — Basic awareness',
+  '2 — Can assist with guidance',
+  '3 — Can work independently',
+  '4 — Can handle complex situations',
+  '5 — Can advise or lead others'
+];
 
 const form = document.getElementById('surveyForm');
 const toolGrid = document.getElementById('toolGrid');
@@ -34,138 +103,196 @@ const submissionOverlay = document.getElementById('submissionOverlay');
 const submissionTitle = document.getElementById('submissionTitle');
 const submissionMessage = document.getElementById('submissionMessage');
 
+function slugify(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
+
 function setStatus(message, type = '') {
   statusEl.textContent = message;
-  statusEl.className = 'status' + (type ? ` ${type}` : '');
-}
-
-
-function showSubmissionOverlay(title, message, mode = 'loading') {
-  submissionTitle.textContent = title;
-  submissionMessage.textContent = message;
-  submissionOverlay.hidden = false;
-  submissionOverlay.classList.toggle('is-success', mode === 'success');
-  document.body.style.overflow = 'hidden';
-}
-
-function hideSubmissionOverlay() {
-  submissionOverlay.hidden = true;
-  submissionOverlay.classList.remove('is-success');
-  document.body.style.overflow = '';
+  statusEl.className = `status ${type}`.trim();
 }
 
 function renderTools() {
-  toolGrid.innerHTML = TOOL_OPTIONS.map((tool, index) => `
-    <div class="choice-card">
-      <input type="checkbox" id="tool_${index}" name="tools" value="${tool}">
-      <label for="tool_${index}">${tool}</label>
-    </div>
+  toolGrid.innerHTML = TOOL_OPTIONS.map(tool => `
+    <label class="choice-pill choice-pill--tool">
+      <input type="checkbox" name="toolsSelected" value="${tool}" ${tool === 'ChatGPT' ? '' : ''} />
+      <span>${tool}</span>
+    </label>
   `).join('');
 
-  toolGrid.querySelectorAll('input[name="tools"]').forEach((input) => {
-    input.addEventListener('change', syncOtherToolField);
-  });
-}
-
-function renderPriorityChoices() {
-  priorityGrid.innerHTML = COMPETENCIES.map((name, index) => `
-    <div class="choice-card">
-      <input type="radio" id="priority_${index}" name="priorityCompetency" value="${name}">
-      <label for="priority_${index}">${name}</label>
-    </div>
-  `).join('');
-
-  priorityGrid.querySelectorAll('input[name="priorityCompetency"]').forEach((input) => {
-    input.addEventListener('change', updatePriorityHighlight);
-  });
-}
-
-function renderCompetencySections() {
-  sectionsWrap.innerHTML = COMPETENCIES.map((name, index) => `
-    <section class="competency-card" data-competency="${name}">
-      <div class="competency-card__head">
-        <div>
-          <div class="competency-chip">Area ${index + 1}</div>
-          <h3>${name}</h3>
-          <p class="competency-card__desc">${AREA_DESCRIPTIONS[name]}</p>
-        </div>
-      </div>
-      <div class="competency-card__body">
-        <div class="prompt-panel">
-          ${PROMPT}
-          <div class="prompt-note">Please separate each question clearly. Putting each question on a new line is helpful.</div>
-        </div>
-        <label>
-          <span class="field-label">Interview questions for ${name}</span>
-          <textarea id="response_${index}" data-competency="${name}" placeholder="You can write a few short questions, a list of questions, or longer questions if needed."></textarea>
-        </label>
-      </div>
-    </section>
-  `).join('');
-}
-
-function updatePriorityHighlight() {
-  const selected = document.querySelector('input[name="priorityCompetency"]:checked')?.value || '';
-  document.querySelectorAll('.competency-card').forEach((card, index) => {
-    const isPriority = card.dataset.competency === selected;
-    card.classList.toggle('is-priority', isPriority);
-    const chip = card.querySelector('.competency-chip');
-    chip.textContent = isPriority ? 'Top priority' : `Area ${index + 1}`;
-  });
-}
-
-function getSelectedTools() {
-  return [...document.querySelectorAll('input[name="tools"]:checked')].map((el) => el.value);
+  toolGrid.addEventListener('change', syncOtherToolField);
 }
 
 function syncOtherToolField() {
-  const showOther = getSelectedTools().includes('Others');
-  otherToolWrap.hidden = !showOther;
-  otherToolInput.required = showOther;
-  if (!showOther) otherToolInput.value = '';
+  const selected = getSelectedTools();
+  const show = selected.includes('Others');
+  otherToolWrap.hidden = !show;
+  otherToolInput.required = show;
+  if (!show) otherToolInput.value = '';
 }
 
-function validateForm() {
-  const industry = document.getElementById('industry').value.trim();
-  const companySize = document.getElementById('companySize').value;
-  const tools = getSelectedTools();
-  const priority = document.querySelector('input[name="priorityCompetency"]:checked')?.value || '';
+function getSelectedTools() {
+  return Array.from(document.querySelectorAll('input[name="toolsSelected"]:checked')).map(input => input.value);
+}
 
-  if (!industry) return 'Please fill in the industry.';
-  if (!companySize) return 'Please select the company size.';
-  if (!tools.length) return 'Please select at least one tool.';
-  if (tools.includes('Others') && !otherToolInput.value.trim()) return 'Please specify the other tool.';
-  if (!priority) return 'Please select the top priority.';
+function renderPriorityChoices() {
+  priorityGrid.innerHTML = COMPETENCIES.map(name => `
+    <label class="priority-card">
+      <input type="radio" name="firstPriority" value="${name}" required />
+      <span class="priority-card__title">${name}</span>
+      <span class="priority-card__meta">${AREA_CONFIG[name].description}</span>
+    </label>
+  `).join('');
 
-  for (let i = 0; i < COMPETENCIES.length; i += 1) {
-    const value = document.getElementById(`response_${i}`).value.trim();
-    if (!value) return `Please write the interview questions for ${COMPETENCIES[i]}.`;
+  priorityGrid.addEventListener('change', updatePriorityHighlight);
+}
+
+function renderScalePills(name, values, groupLabel) {
+  return values.map((label, index) => `
+    <label class="scale-pill">
+      <input type="radio" name="${name}" value="${index + 1}" required />
+      <span>${label}</span>
+    </label>
+  `).join('');
+}
+
+function renderCompetencySections() {
+  sectionsWrap.innerHTML = COMPETENCIES.map((name, idx) => {
+    const key = slugify(name);
+    const focusHtml = AREA_CONFIG[name].focuses.map((item, itemIdx) => `
+      <label class="focus-option">
+        <input type="checkbox" name="${key}_focus" value="${item}" />
+        <span class="focus-option__tick">${String(itemIdx + 1).padStart(2, '0')}</span>
+        <span>${item}</span>
+      </label>
+    `).join('');
+
+    return `
+      <article class="competency-card" data-competency="${name}">
+        <div class="competency-card__head">
+          <div>
+            <div class="competency-card__eyebrow">Area ${idx + 1}</div>
+            <h3>${name}</h3>
+            <p>${AREA_CONFIG[name].description}</p>
+          </div>
+          <div class="priority-badge" hidden>Top priority</div>
+        </div>
+
+        <div class="field-card field-card--soft">
+          <div class="field-label-row">
+            <span class="field-label">How important is this area when hiring this person?</span>
+          </div>
+          <div class="scale-grid">${renderScalePills(`${key}_importance`, IMPORTANCE_SCALE)}</div>
+        </div>
+
+        <div class="field-card field-card--soft">
+          <div class="field-label-row">
+            <span class="field-label">Which of the following would you most want to assess in this area?</span>
+            <span class="field-helper"><span id="${key}_count">0</span> of 3 selected</span>
+          </div>
+          <div class="focus-grid" data-focus-group="${key}">${focusHtml}</div>
+          <div class="micro-note">Select up to three.</div>
+        </div>
+
+        <div class="field-card field-card--soft">
+          <div class="field-label-row">
+            <span class="field-label">What level would you expect in this area?</span>
+          </div>
+          <div class="scale-grid">${renderScalePills(`${key}_level`, LEVEL_SCALE)}</div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  document.querySelectorAll('.focus-grid').forEach(grid => {
+    grid.addEventListener('change', () => enforceFocusLimit(grid.dataset.focusGroup));
+  });
+}
+
+function enforceFocusLimit(groupKey) {
+  const inputs = Array.from(document.querySelectorAll(`input[name="${groupKey}_focus"]`));
+  const checked = inputs.filter(input => input.checked);
+  const maxed = checked.length >= 3;
+  inputs.forEach(input => {
+    if (!input.checked) input.disabled = maxed;
+  });
+  const counter = document.getElementById(`${groupKey}_count`);
+  if (counter) counter.textContent = String(checked.length);
+}
+
+function updatePriorityHighlight() {
+  const selected = document.querySelector('input[name="firstPriority"]:checked')?.value || '';
+  document.querySelectorAll('.competency-card').forEach(card => {
+    const match = card.dataset.competency === selected;
+    card.classList.toggle('competency-card--priority', match);
+    const badge = card.querySelector('.priority-badge');
+    if (badge) badge.hidden = !match;
+  });
+}
+
+function getFocusValues(groupKey) {
+  return Array.from(document.querySelectorAll(`input[name="${groupKey}_focus"]:checked`)).map(input => input.value);
+}
+
+function buildPayload() {
+  const payload = {
+    industry: document.getElementById('industry').value.trim(),
+    companySize: document.getElementById('companySize').value,
+    toolsSelected: getSelectedTools(),
+    otherTool: document.getElementById('otherTool').value.trim(),
+    firstPriority: document.querySelector('input[name="firstPriority"]:checked')?.value || '',
+    additionalComments: document.getElementById('additionalComments').value.trim(),
+    submittedAtClient: new Date().toISOString()
+  };
+
+  COMPETENCIES.forEach(name => {
+    const key = slugify(name);
+    payload[`${key}_importance`] = document.querySelector(`input[name="${key}_importance"]:checked`)?.value || '';
+    payload[`${key}_focus`] = getFocusValues(key);
+    payload[`${key}_level`] = document.querySelector(`input[name="${key}_level"]:checked`)?.value || '';
+  });
+
+  return payload;
+}
+
+function validatePayload(payload) {
+  if (!payload.industry) return 'Industry is required.';
+  if (!payload.companySize) return 'Company size is required.';
+  if (!payload.toolsSelected.length) return 'Please select at least one tool.';
+  if (payload.toolsSelected.includes('Others') && !payload.otherTool) return 'Please specify the other tool.';
+  if (!payload.firstPriority) return 'Please select your top priority area.';
+
+  for (const name of COMPETENCIES) {
+    const key = slugify(name);
+    if (!payload[`${key}_importance`]) return `Please rate the importance of ${name}.`;
+    if (!payload[`${key}_focus`].length) return `Please select at least one focus item for ${name}.`;
+    if (payload[`${key}_focus`].length > 3) return `${name} allows up to three focus items.`;
+    if (!payload[`${key}_level`]) return `Please select the expected level for ${name}.`;
   }
 
   return '';
 }
 
-form.addEventListener('submit', async (event) => {
+function showSubmissionOverlay(title, message) {
+  submissionTitle.textContent = title;
+  submissionMessage.textContent = message;
+  submissionOverlay.hidden = false;
+  document.body.classList.add('overlay-open');
+}
+
+function hideSubmissionOverlay() {
+  submissionOverlay.hidden = true;
+  document.body.classList.remove('overlay-open');
+}
+
+form.addEventListener('submit', async event => {
   event.preventDefault();
-  const error = validateForm();
-  if (error) {
-    setStatus(error, 'error');
+  const payload = buildPayload();
+  const validationError = validatePayload(payload);
+  if (validationError) {
+    setStatus(validationError, 'error');
     return;
   }
-
-  const payload = {
-    industry: document.getElementById('industry').value.trim(),
-    companySize: document.getElementById('companySize').value,
-    toolsSelected: getSelectedTools(),
-    otherTool: otherToolInput.value.trim(),
-    firstPriority: document.querySelector('input[name="priorityCompetency"]:checked').value,
-    analyticsQuestions: document.getElementById('response_0').value.trim(),
-    aiQuestions: document.getElementById('response_1').value.trim(),
-    toolsQuestions: document.getElementById('response_2').value.trim(),
-    softSkillsQuestions: document.getElementById('response_3').value.trim(),
-    governanceQuestions: document.getElementById('response_4').value.trim(),
-    submittedAtClient: new Date().toISOString()
-  };
 
   const appsScriptUrl = window.APP_CONFIG?.appsScriptUrl || '';
   if (!appsScriptUrl) {
@@ -185,19 +312,16 @@ form.addEventListener('submit', async (event) => {
     });
 
     const data = await response.json();
-    if (data.status !== 'success') {
-      throw new Error(data.message || 'Submission failed.');
-    }
+    if (data.status !== 'success') throw new Error(data.message || 'Submission failed.');
 
     setStatus('Response submitted successfully.', 'success');
     form.reset();
     syncOtherToolField();
+    document.querySelectorAll('.focus-grid').forEach(grid => enforceFocusLimit(grid.dataset.focusGroup));
     updatePriorityHighlight();
-    showSubmissionOverlay('Submission complete', 'Thank you for your participation. We are working on something very exciting!', 'success');
+    showSubmissionOverlay('Submission complete', 'Thank you for your participation. We are working on something very exciting!');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => {
-      hideSubmissionOverlay();
-    }, 2600);
+    setTimeout(hideSubmissionOverlay, 2600);
   } catch (error) {
     hideSubmissionOverlay();
     setStatus(`Unable to submit to Google Sheets: ${error.message}`, 'error');
@@ -211,3 +335,4 @@ renderPriorityChoices();
 renderCompetencySections();
 syncOtherToolField();
 updatePriorityHighlight();
+document.querySelectorAll('.focus-grid').forEach(grid => enforceFocusLimit(grid.dataset.focusGroup));
