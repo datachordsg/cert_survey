@@ -367,13 +367,10 @@ form.addEventListener('submit', async event => {
     if (data.status !== 'success') throw new Error(data.message || 'Submission failed.');
 
     setStatus('Response submitted successfully.', 'success');
-    form.reset();
-    syncOtherToolField();
-    document.querySelectorAll('.focus-grid').forEach(grid => enforceFocusLimit(grid.dataset.focusGroup));
-    updatePriorityHighlight();
-    showSubmissionOverlay('Submission complete', 'Thank you for your participation. We are working on something very exciting!');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(hideSubmissionOverlay, 2600);
+    showSubmissionOverlay('Submission complete', 'Preparing your confirmation page...');
+    setTimeout(() => {
+      window.location.href = 'thankyou.html';
+    }, 900);
   } catch (error) {
     hideSubmissionOverlay();
     setStatus(`Unable to submit to Google Sheets: ${error.message}`, 'error');

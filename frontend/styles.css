@@ -914,3 +914,92 @@ textarea {
 .inline-level-pill input:focus + span {
   box-shadow: 0 0 0 4px rgba(29, 92, 255, 0.12);
 }
+
+
+.thankyou-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.thankyou-shell {
+  position: relative;
+  z-index: 1;
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0;
+}
+.thankyou-card {
+  background: rgba(255,255,255,0.84);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.72);
+  border-radius: 34px;
+  box-shadow: 0 28px 80px rgba(16,36,62,0.18);
+  text-align: center;
+  padding: 56px 40px;
+}
+.thankyou-badge {
+  display: inline-flex;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(29, 92, 255, 0.10);
+  color: var(--primary-strong);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.thankyou-card h1 {
+  margin: 18px auto 12px;
+  max-width: 720px;
+  font-size: clamp(2.1rem, 5vw, 3.7rem);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+.thankyou-card p {
+  margin: 0 auto;
+  max-width: 680px;
+  font-size: 1.12rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.thankyou-orbit {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  margin: 28px auto 16px;
+  perspective: 900px;
+}
+.thankyou-orbit__core {
+  position: absolute;
+  inset: 50%;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #8fc5ff 35%, #1d5cff 72%, #10243e 100%);
+  box-shadow: 0 0 40px rgba(29,92,255,0.45);
+}
+.thankyou-orbit__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(29,92,255,0.18);
+  box-shadow: inset 0 0 30px rgba(29,92,255,0.08);
+}
+.thankyou-orbit__ring--one {
+  transform: rotateX(68deg) rotateY(12deg);
+  animation: orbitSpinA 7s linear infinite;
+}
+.thankyou-orbit__ring--two {
+  transform: rotateX(18deg) rotateY(72deg);
+  animation: orbitSpinB 9s linear infinite;
+}
+@keyframes orbitSpinA {
+  from { transform: rotateX(68deg) rotateY(12deg) rotateZ(0deg); }
+  to { transform: rotateX(68deg) rotateY(12deg) rotateZ(360deg); }
+}
+@keyframes orbitSpinB {
+  from { transform: rotateX(18deg) rotateY(72deg) rotateZ(360deg); }
+  to { transform: rotateX(18deg) rotateY(72deg) rotateZ(0deg); }
+}
