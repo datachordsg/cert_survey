@@ -107,6 +107,15 @@ function slugify(value) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
 function setStatus(message, type = '') {
   statusEl.textContent = message;
   statusEl.className = `status ${type}`.trim();
@@ -147,7 +156,7 @@ function renderPriorityChoices() {
   priorityGrid.addEventListener('change', updatePriorityHighlight);
 }
 
-function renderScalePills(name, values, groupLabel) {
+function renderScalePills(name, values) {
   return values.map((label, index) => `
     <label class="scale-pill">
       <input type="radio" name="${name}" value="${index + 1}" required />
@@ -156,15 +165,36 @@ function renderScalePills(name, values, groupLabel) {
   `).join('');
 }
 
+function renderLevelChooser(groupKey, itemIndex) {
+  return `
+    <div class="inline-level-row">
+      <div class="inline-level-label">What level of capability would you expect for this?</div>
+      <div class="inline-level-grid">
+        ${LEVEL_SCALE.map((label, levelIndex) => `
+          <label class="inline-level-pill">
+            <input type="radio" name="${groupKey}_focus_level_${itemIndex}" value="${levelIndex + 1}" />
+            <span>${label}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
 function renderCompetencySections() {
   sectionsWrap.innerHTML = COMPETENCIES.map((name, idx) => {
     const key = slugify(name);
     const focusHtml = AREA_CONFIG[name].focuses.map((item, itemIdx) => `
-      <label class="focus-button">
-        <input type="checkbox" name="${key}_focus" value="${item}" />
-        <span class="focus-button__index">${String(itemIdx + 1).padStart(2, '0')}</span>
-        <span class="focus-button__text">${item}</span>
-      </label>
+      <div class="focus-selection-block" data-item="${escapeHtml(item)}" data-item-index="${itemIdx}">
+        <label class="focus-button">
+          <input type="checkbox" name="${key}_focus" value="${escapeHtml(item)}" />
+          <span class="focus-button__index">${String(itemIdx + 1).padStart(2, '0')}</span>
+          <span class="focus-button__text">${escapeHtml(item)}</span>
+        </label>
+        <div class="inline-level-wrap" hidden>
+          ${renderLevelChooser(key, itemIdx)}
+        </div>
+      </div>
     `).join('');
 
     return `
@@ -191,21 +221,34 @@ function renderCompetencySections() {
             <span class="field-helper"><span id="${key}_count">0</span> of 3 selected</span>
           </div>
           <div class="focus-grid" data-focus-group="${key}">${focusHtml}</div>
-          <div class="micro-note">Select up to three.</div>
-        </div>
-
-        <div class="field-card field-card--soft">
-          <div class="field-label-row">
-            <span class="field-label">What level would you expect in this area?</span>
-          </div>
-          <div class="scale-grid">${renderScalePills(`${key}_level`, LEVEL_SCALE)}</div>
+          <div class="micro-note">Select up to three. Each selected item will ask for its own expected level.</div>
         </div>
       </article>
     `;
   }).join('');
 
   document.querySelectorAll('.focus-grid').forEach(grid => {
-    grid.addEventListener('change', () => enforceFocusLimit(grid.dataset.focusGroup));
+    grid.addEventListener('change', event => {
+      if (event.target.matches(`input[name="${grid.dataset.focusGroup}_focus"]`)) {
+        enforceFocusLimit(grid.dataset.focusGroup);
+      }
+    });
+  });
+}
+
+function updateSelectedFocusLevels(groupKey) {
+  const blocks = Array.from(document.querySelectorAll(`[data-focus-group="${groupKey}"] .focus-selection-block`));
+  blocks.forEach(block => {
+    const checkbox = block.querySelector(`input[name="${groupKey}_focus"]`);
+    const wrap = block.querySelector('.inline-level-wrap');
+    const radios = block.querySelectorAll(`input[name^="${groupKey}_focus_level_"]`);
+    const checked = checkbox.checked;
+    wrap.hidden = !checked;
+    radios.forEach(radio => {
+      radio.required = checked;
+      if (!checked) radio.checked = false;
+      radio.disabled = !checked;
+    });
   });
 }
 
@@ -218,6 +261,7 @@ function enforceFocusLimit(groupKey) {
   });
   const counter = document.getElementById(`${groupKey}_count`);
   if (counter) counter.textContent = String(checked.length);
+  updateSelectedFocusLevels(groupKey);
 }
 
 function updatePriorityHighlight() {
@@ -230,8 +274,15 @@ function updatePriorityHighlight() {
   });
 }
 
-function getFocusValues(groupKey) {
-  return Array.from(document.querySelectorAll(`input[name="${groupKey}_focus"]:checked`)).map(input => input.value);
+function getFocusSelections(groupKey) {
+  const blocks = Array.from(document.querySelectorAll(`[data-focus-group="${groupKey}"] .focus-selection-block`));
+  return blocks
+    .filter(block => block.querySelector(`input[name="${groupKey}_focus"]`).checked)
+    .map(block => {
+      const item = block.querySelector(`input[name="${groupKey}_focus"]`).value;
+      const level = block.querySelector(`input[name^="${groupKey}_focus_level_"]:checked`)?.value || '';
+      return { item, level };
+    });
 }
 
 function buildPayload() {
@@ -248,8 +299,7 @@ function buildPayload() {
   COMPETENCIES.forEach(name => {
     const key = slugify(name);
     payload[`${key}_importance`] = document.querySelector(`input[name="${key}_importance"]:checked`)?.value || '';
-    payload[`${key}_focus`] = getFocusValues(key);
-    payload[`${key}_level`] = document.querySelector(`input[name="${key}_level"]:checked`)?.value || '';
+    payload[`${key}_focus`] = getFocusSelections(key);
   });
 
   return payload;
@@ -265,9 +315,11 @@ function validatePayload(payload) {
   for (const name of COMPETENCIES) {
     const key = slugify(name);
     if (!payload[`${key}_importance`]) return `Please rate the importance of ${name}.`;
-    if (!payload[`${key}_focus`].length) return `Please select at least one focus item for ${name}.`;
-    if (payload[`${key}_focus`].length > 3) return `${name} allows up to three focus items.`;
-    if (!payload[`${key}_level`]) return `Please select the expected level for ${name}.`;
+    const focusSelections = payload[`${key}_focus`];
+    if (!focusSelections.length) return `Please select at least one focus item for ${name}.`;
+    if (focusSelections.length > 3) return `${name} allows up to three focus items.`;
+    const missingLevel = focusSelections.find(selection => !selection.level);
+    if (missingLevel) return `Please select the expected level for each chosen item in ${name}.`;
   }
 
   return '';
