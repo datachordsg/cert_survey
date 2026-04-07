@@ -3,93 +3,150 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hiring Manager Interview Question Survey</title>
+  <title>Hiring Manager Competency Survey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <script>
     window.APP_CONFIG = {
-      appsScriptUrl: "https://script.google.com/macros/s/AKfycbzRNsIJJ_8W2QFIV1Vb1lmc5RqZmNJ3SldOFdLzwL8HVDlAHPJ3-h7TF3q1YnOUOBQc/exec"
+      appsScriptUrl: "https://script.google.com/macros/s/AKfycbwH8jLkgaANKRAqtW7VcnA-_mPdHBF95MFeZHgXzOvYPXqzW-lrJLBXeJN1QpZc0rgm/exec"
     };
   </script>
 </head>
 <body>
-  <main class="container">
-    <section class="card">
-      <h1>Hiring Manager Interview Question Survey</h1>
-      <p class="lead">Imagine you are hiring a high-value individual to support digital transformation and corporate enablement in your organisation.</p>
-      <p class="prompt-banner">If you were the hiring manager, what actual interview questions would you ask the candidate in this area? Please write the questions as you would ask them in the interview. You may also include questions you have in mind, even if they may not necessarily be asked.</p>
+  <div class="ambient ambient--one"></div>
+  <div class="ambient ambient--two"></div>
 
-      <form id="surveyForm">
-        <div id="step-indicator" class="step-indicator">Step 1 of 4</div>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand-mark">HM</div>
+      <div>
+        <div class="eyebrow">Employer insight survey</div>
+        <div class="topbar__title">Hiring Manager Competency Survey</div>
+      </div>
+    </header>
 
-        <div class="step active" data-step="1">
-          <h2>About your organisation</h2>
-          <div class="field-grid">
-            <label>
-              <span>Industry</span>
-              <input type="text" id="industry" name="industry" required />
-            </label>
-            <label>
-              <span>Company size</span>
-              <select id="companySize" name="companySize" required>
-                <option value="">Select company size</option>
-                <option>1–10 employees</option>
-                <option>11–50 employees</option>
-                <option>51–200 employees</option>
-                <option>201–500 employees</option>
-                <option>501–1,000 employees</option>
-                <option>1,001–5,000 employees</option>
-                <option>More than 5,000 employees</option>
-              </select>
-            </label>
+    <section class="hero-panel">
+      <div class="hero-copy">
+        <div class="hero-kicker">Designed for digital transformation hiring insight</div>
+        <h1>What would hiring managers actually ask in an interview?</h1>
+        <p class="hero-lead">Use this survey to capture real interview questions across five capability areas, while still identifying the single area that matters most for the hire.</p>
+      </div>
+      <div class="hero-sidecard">
+        <div class="sidecard-label">Survey instruction</div>
+        <p>If you were the hiring manager, what actual interview questions would you ask the candidate in this area? Please write the questions as you would ask them in the interview. You may also include questions you have in mind, even if they may not necessarily be asked. Please write one question per line and keep your questions mainly focused on the selected area.</p>
+      </div>
+    </section>
+
+    <main class="survey-layout">
+      <aside class="rail-card">
+        <div class="rail-card__section">
+          <div class="rail-title">How this works</div>
+          <ul class="rail-list">
+            <li>Share your organisation context.</li>
+            <li>Select the one capability area that is first and foremost.</li>
+            <li>Answer all five sections with the interview questions you would actually use.</li>
+          </ul>
+        </div>
+        <div class="rail-card__section metrics-block">
+          <div class="metric">
+            <span class="metric__value">5</span>
+            <span class="metric__label">capability areas</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">1</span>
+            <span class="metric__label">top priority</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">∞</span>
+            <span class="metric__label">question depth</span>
           </div>
         </div>
-
-        <div class="step" data-step="2">
-          <h2>Top 1 competency</h2>
-          <label>
-            <span>Which competency is your top concern?</span>
-            <select id="top1Competency" required></select>
-          </label>
-          <label class="textarea-block">
-            <span>Write the interview questions for this area</span>
-            <textarea id="top1Questions" rows="12" required></textarea>
-          </label>
+        <div class="rail-card__section checklist-block">
+          <div class="rail-title">Best response style</div>
+          <div class="micro-note">Write one interview question per line. Keep each section focused on the named area rather than mixing multiple themes into one question.</div>
         </div>
+      </aside>
 
-        <div class="step" data-step="3">
-          <h2>Top 2 competency</h2>
-          <label>
-            <span>Which competency is your second concern?</span>
-            <select id="top2Competency" required></select>
-          </label>
-          <label class="textarea-block">
-            <span>Write the interview questions for this area</span>
-            <textarea id="top2Questions" rows="12" required></textarea>
-          </label>
-        </div>
+      <section class="form-shell">
+        <form id="surveyForm" novalidate>
+          <section class="section-card section-card--intro">
+            <div class="section-head">
+              <div>
+                <span class="section-tag">Section 1</span>
+                <h2>Organisation profile</h2>
+                <p>This helps you compare responses by business context later.</p>
+              </div>
+            </div>
 
-        <div class="step" data-step="4">
-          <h2>Top 3 competency</h2>
-          <label>
-            <span>Which competency is your third concern?</span>
-            <select id="top3Competency" required></select>
-          </label>
-          <label class="textarea-block">
-            <span>Write the interview questions for this area</span>
-            <textarea id="top3Questions" rows="12" required></textarea>
-          </label>
-        </div>
+            <div class="field-grid field-grid--two">
+              <label class="field-card">
+                <span class="field-label">Industry</span>
+                <input type="text" id="industry" name="industry" placeholder="e.g. Financial services, manufacturing, education" required />
+              </label>
+              <label class="field-card">
+                <span class="field-label">Company size</span>
+                <select id="companySize" name="companySize" required>
+                  <option value="">Select company size</option>
+                  <option>1–10 employees</option>
+                  <option>11–50 employees</option>
+                  <option>51–200 employees</option>
+                  <option>201–500 employees</option>
+                  <option>501–1,000 employees</option>
+                  <option>1,001–5,000 employees</option>
+                  <option>More than 5,000 employees</option>
+                </select>
+              </label>
+            </div>
 
-        <div class="actions">
-          <button type="button" id="backBtn" class="secondary">Back</button>
-          <button type="button" id="nextBtn">Next</button>
-          <button type="submit" id="submitBtn" hidden>Submit</button>
-        </div>
-      </form>
+            <div class="field-card field-card--full">
+              <div class="field-label-row">
+                <span class="field-label">Tools used or expected in the role</span>
+                <span class="field-helper">Select all that apply</span>
+              </div>
+              <div class="choice-grid choice-grid--tools" id="toolGrid"></div>
+              <div class="nested-input" id="otherToolWrap" hidden>
+                <label class="field-card field-card--nested">
+                  <span class="field-label">If Others, please specify</span>
+                  <input type="text" id="otherTool" name="otherTool" />
+                </label>
+              </div>
+            </div>
+          </section>
 
-      <div id="status" class="status" aria-live="polite"></div>
-    </section>
-  </main>
+          <section class="section-card section-card--priority">
+            <div class="section-head">
+              <div>
+                <span class="section-tag">Section 2</span>
+                <h2>First and foremost hiring priority</h2>
+                <p>Among the five areas below, choose the one that matters most for this hire.</p>
+              </div>
+            </div>
+            <div class="choice-grid choice-grid--priority" id="priorityGrid"></div>
+          </section>
+
+          <section class="section-card section-card--responses">
+            <div class="section-head">
+              <div>
+                <span class="section-tag">Section 3</span>
+                <h2>Interview question areas</h2>
+                <p>Answer all five areas. Your selected top priority will be highlighted below.</p>
+              </div>
+            </div>
+            <div id="competencySections" class="competency-stack"></div>
+          </section>
+
+          <div class="submit-strip">
+            <div id="status" class="status" aria-live="polite"></div>
+            <button type="submit" id="submitBtn" class="primary-btn">
+              <span>Submit response</span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
 
   <script src="app.js"></script>
 </body>

@@ -16,12 +16,14 @@ function doPost(e) {
       new Date(),
       valueOrBlank_(payload.industry),
       valueOrBlank_(payload.companySize),
-      valueOrBlank_(payload.top1Competency),
-      valueOrBlank_(payload.top1Questions),
-      valueOrBlank_(payload.top2Competency),
-      valueOrBlank_(payload.top2Questions),
-      valueOrBlank_(payload.top3Competency),
-      valueOrBlank_(payload.top3Questions),
+      toolsAsText_(payload.toolsSelected),
+      valueOrBlank_(payload.otherTool),
+      valueOrBlank_(payload.firstPriority),
+      valueOrBlank_(payload.analyticsQuestions),
+      valueOrBlank_(payload.aiQuestions),
+      valueOrBlank_(payload.toolsQuestions),
+      valueOrBlank_(payload.softSkillsQuestions),
+      valueOrBlank_(payload.governanceQuestions),
       valueOrBlank_(payload.submittedAtClient)
     ];
 
@@ -43,15 +45,14 @@ function doPost(e) {
 function validatePayload_(row) {
   if (!row[2]) throw new Error('Industry is required.');
   if (!row[3]) throw new Error('Company size is required.');
-  if (!row[4] || !row[5]) throw new Error('Top 1 competency and questions are required.');
-  if (!row[6] || !row[7]) throw new Error('Top 2 competency and questions are required.');
-  if (!row[8] || !row[9]) throw new Error('Top 3 competency and questions are required.');
-
-  var unique = {};
-  [row[4], row[6], row[8]].forEach(function(item) {
-    if (unique[item]) throw new Error('Each selected competency must be different.');
-    unique[item] = true;
-  });
+  if (!row[4]) throw new Error('At least one tool must be selected.');
+  if (row[4].indexOf('Others') !== -1 && !row[5]) throw new Error('Please specify the other tool.');
+  if (!row[6]) throw new Error('First priority is required.');
+  if (!row[7]) throw new Error('Analytics or Business Intelligence questions are required.');
+  if (!row[8]) throw new Error('Use of AI questions are required.');
+  if (!row[9]) throw new Error('Proficiency in Tools questions are required.');
+  if (!row[10]) throw new Error('Soft Skills and Communication questions are required.');
+  if (!row[11]) throw new Error('Governance questions are required.');
 }
 
 function getOrCreateResponsesSheet_() {
@@ -76,12 +77,14 @@ function ensureHeader_(sheet) {
     'submitted_at',
     'industry',
     'company_size',
-    'top1_competency',
-    'top1_questions',
-    'top2_competency',
-    'top2_questions',
-    'top3_competency',
-    'top3_questions',
+    'tools_selected',
+    'other_tool',
+    'first_priority',
+    'analytics_or_business_intelligence_questions',
+    'use_of_ai_questions',
+    'proficiency_in_tools_questions',
+    'soft_skills_and_communication_questions',
+    'governance_questions',
     'submitted_at_client'
   ];
 
@@ -99,4 +102,9 @@ function jsonResponse_(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function toolsAsText_(value) {
+  if (Array.isArray(value)) return value.map(valueOrBlank_).filter(String).join(' | ');
+  return valueOrBlank_(value);
 }

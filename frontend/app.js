@@ -6,114 +6,130 @@ const COMPETENCIES = [
   'Governance'
 ];
 
+const TOOL_OPTIONS = [
+  'ChatGPT', 'Copilot', 'Python', 'R', 'Power BI', 'Tableau', 'Microsoft Office',
+  'Gemini', 'Canva', 'SQL', 'OneDrive', 'Google Workspace', 'Trello',
+  'Perplexity', 'AnythingLLM', 'Zapier AI', 'Others'
+];
+
+const AREA_DESCRIPTIONS = {
+  'Analytics or Business Intelligence': 'Focus on data use, insight generation, business interpretation, and decision support.',
+  'Use of AI': 'Focus on how candidates use, assess, or apply AI in work and decision contexts.',
+  'Proficiency in Tools': 'Focus on practical use of software, platforms, technical environments, or work tools.',
+  'Soft Skills and Communication': 'Focus on stakeholder engagement, teamwork, influence, communication, and change support.',
+  'Governance': 'Focus on controls, responsibility, policy, compliance, ethics, and risk-aware use of digital capabilities.'
+};
+
+const PROMPT = 'If you were the hiring manager, what actual interview questions would you ask the candidate in this area? Please write the questions as you would ask them in the interview. You may also include questions you have in mind, even if they may not necessarily be asked. Please write one question per line and keep your questions mainly focused on the selected area.';
+
 const form = document.getElementById('surveyForm');
-const steps = [...document.querySelectorAll('.step')];
-const stepIndicator = document.getElementById('step-indicator');
-const backBtn = document.getElementById('backBtn');
-const nextBtn = document.getElementById('nextBtn');
-const submitBtn = document.getElementById('submitBtn');
+const toolGrid = document.getElementById('toolGrid');
+const priorityGrid = document.getElementById('priorityGrid');
+const sectionsWrap = document.getElementById('competencySections');
 const statusEl = document.getElementById('status');
-
-const top1Select = document.getElementById('top1Competency');
-const top2Select = document.getElementById('top2Competency');
-const top3Select = document.getElementById('top3Competency');
-
-let currentStep = 1;
+const submitBtn = document.getElementById('submitBtn');
+const otherToolWrap = document.getElementById('otherToolWrap');
+const otherToolInput = document.getElementById('otherTool');
 
 function setStatus(message, type = '') {
   statusEl.textContent = message;
   statusEl.className = 'status' + (type ? ` ${type}` : '');
 }
 
-function populateSelect(selectEl, options, currentValue = '') {
-  selectEl.innerHTML = '';
-  const placeholder = document.createElement('option');
-  placeholder.value = '';
-  placeholder.textContent = 'Select a competency';
-  selectEl.appendChild(placeholder);
+function renderTools() {
+  toolGrid.innerHTML = TOOL_OPTIONS.map((tool, index) => `
+    <div class="choice-card">
+      <input type="checkbox" id="tool_${index}" name="tools" value="${tool}">
+      <label for="tool_${index}">${tool}</label>
+    </div>
+  `).join('');
 
-  options.forEach(option => {
-    const el = document.createElement('option');
-    el.value = option;
-    el.textContent = option;
-    if (option === currentValue) el.selected = true;
-    selectEl.appendChild(el);
+  toolGrid.querySelectorAll('input[name="tools"]').forEach((input) => {
+    input.addEventListener('change', syncOtherToolField);
   });
 }
 
-function refreshCompetencyOptions() {
-  const selected1 = top1Select.value;
-  const selected2 = top2Select.value;
-  const selected3 = top3Select.value;
+function renderPriorityChoices() {
+  priorityGrid.innerHTML = COMPETENCIES.map((name, index) => `
+    <div class="choice-card">
+      <input type="radio" id="priority_${index}" name="priorityCompetency" value="${name}">
+      <label for="priority_${index}">${name}</label>
+    </div>
+  `).join('');
 
-  populateSelect(top1Select, COMPETENCIES, selected1);
-  populateSelect(top2Select, COMPETENCIES.filter(v => v !== selected1), selected2);
-  populateSelect(top3Select, COMPETENCIES.filter(v => v !== selected1 && v !== selected2), selected3);
+  priorityGrid.querySelectorAll('input[name="priorityCompetency"]').forEach((input) => {
+    input.addEventListener('change', updatePriorityHighlight);
+  });
 }
 
-function showStep(stepNumber) {
-  currentStep = stepNumber;
-  steps.forEach(step => step.classList.toggle('active', Number(step.dataset.step) === stepNumber));
-  stepIndicator.textContent = `Step ${stepNumber} of 4`;
-  backBtn.disabled = stepNumber === 1;
-  nextBtn.hidden = stepNumber === 4;
-  submitBtn.hidden = stepNumber !== 4;
-  refreshCompetencyOptions();
+function renderCompetencySections() {
+  sectionsWrap.innerHTML = COMPETENCIES.map((name, index) => `
+    <section class="competency-card" data-competency="${name}">
+      <div class="competency-card__head">
+        <div>
+          <div class="competency-chip">Area ${index + 1}</div>
+          <h3>${name}</h3>
+          <p class="competency-card__desc">${AREA_DESCRIPTIONS[name]}</p>
+        </div>
+      </div>
+      <div class="competency-card__body">
+        <div class="prompt-panel">
+          ${PROMPT}
+          <div class="prompt-note">Write one question per line.</div>
+        </div>
+        <label>
+          <span class="field-label">Interview questions for ${name}</span>
+          <textarea id="response_${index}" data-competency="${name}" placeholder="Enter one interview question per line."></textarea>
+        </label>
+      </div>
+    </section>
+  `).join('');
 }
 
-function validateStep(stepNumber) {
-  if (stepNumber === 1) {
-    const industry = document.getElementById('industry');
-    const companySize = document.getElementById('companySize');
-    if (!industry.value.trim()) return 'Please fill in the industry.';
-    if (!companySize.value) return 'Please select the company size.';
-    return '';
-  }
+function updatePriorityHighlight() {
+  const selected = document.querySelector('input[name="priorityCompetency"]:checked')?.value || '';
+  document.querySelectorAll('.competency-card').forEach((card, index) => {
+    const isPriority = card.dataset.competency === selected;
+    card.classList.toggle('is-priority', isPriority);
+    const chip = card.querySelector('.competency-chip');
+    chip.textContent = isPriority ? 'First and foremost priority' : `Area ${index + 1}`;
+  });
+}
 
-  if (stepNumber === 2) {
-    if (!top1Select.value) return 'Please choose your top competency.';
-    if (!document.getElementById('top1Questions').value.trim()) return 'Please write the interview questions for your top competency.';
-    return '';
-  }
+function getSelectedTools() {
+  return [...document.querySelectorAll('input[name="tools"]:checked')].map((el) => el.value);
+}
 
-  if (stepNumber === 3) {
-    if (!top2Select.value) return 'Please choose your second competency.';
-    if (!document.getElementById('top2Questions').value.trim()) return 'Please write the interview questions for your second competency.';
-    return '';
-  }
+function syncOtherToolField() {
+  const showOther = getSelectedTools().includes('Others');
+  otherToolWrap.hidden = !showOther;
+  otherToolInput.required = showOther;
+  if (!showOther) otherToolInput.value = '';
+}
 
-  if (stepNumber === 4) {
-    if (!top3Select.value) return 'Please choose your third competency.';
-    if (!document.getElementById('top3Questions').value.trim()) return 'Please write the interview questions for your third competency.';
-    return '';
+function validateForm() {
+  const industry = document.getElementById('industry').value.trim();
+  const companySize = document.getElementById('companySize').value;
+  const tools = getSelectedTools();
+  const priority = document.querySelector('input[name="priorityCompetency"]:checked')?.value || '';
+
+  if (!industry) return 'Please fill in the industry.';
+  if (!companySize) return 'Please select the company size.';
+  if (!tools.length) return 'Please select at least one tool.';
+  if (tools.includes('Others') && !otherToolInput.value.trim()) return 'Please specify the other tool.';
+  if (!priority) return 'Please select the first and foremost priority.';
+
+  for (let i = 0; i < COMPETENCIES.length; i += 1) {
+    const value = document.getElementById(`response_${i}`).value.trim();
+    if (!value) return `Please write the interview questions for ${COMPETENCIES[i]}.`;
   }
 
   return '';
 }
 
-backBtn.addEventListener('click', () => {
-  if (currentStep > 1) {
-    setStatus('');
-    showStep(currentStep - 1);
-  }
-});
-
-nextBtn.addEventListener('click', () => {
-  const error = validateStep(currentStep);
-  if (error) {
-    setStatus(error, 'error');
-    return;
-  }
-  setStatus('');
-  showStep(currentStep + 1);
-});
-
-top1Select.addEventListener('change', refreshCompetencyOptions);
-top2Select.addEventListener('change', refreshCompetencyOptions);
-
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const error = validateStep(4);
+  const error = validateForm();
   if (error) {
     setStatus(error, 'error');
     return;
@@ -122,12 +138,14 @@ form.addEventListener('submit', async (event) => {
   const payload = {
     industry: document.getElementById('industry').value.trim(),
     companySize: document.getElementById('companySize').value,
-    top1Competency: top1Select.value,
-    top1Questions: document.getElementById('top1Questions').value.trim(),
-    top2Competency: top2Select.value,
-    top2Questions: document.getElementById('top2Questions').value.trim(),
-    top3Competency: top3Select.value,
-    top3Questions: document.getElementById('top3Questions').value.trim(),
+    toolsSelected: getSelectedTools(),
+    otherTool: otherToolInput.value.trim(),
+    firstPriority: document.querySelector('input[name="priorityCompetency"]:checked').value,
+    analyticsQuestions: document.getElementById('response_0').value.trim(),
+    aiQuestions: document.getElementById('response_1').value.trim(),
+    toolsQuestions: document.getElementById('response_2').value.trim(),
+    softSkillsQuestions: document.getElementById('response_3').value.trim(),
+    governanceQuestions: document.getElementById('response_4').value.trim(),
     submittedAtClient: new Date().toISOString()
   };
 
@@ -138,7 +156,6 @@ form.addEventListener('submit', async (event) => {
   }
 
   submitBtn.disabled = true;
-  backBtn.disabled = true;
   setStatus('Submitting response...');
 
   try {
@@ -155,15 +172,18 @@ form.addEventListener('submit', async (event) => {
 
     setStatus('Response submitted successfully.', 'success');
     form.reset();
-    refreshCompetencyOptions();
-    showStep(1);
+    syncOtherToolField();
+    updatePriorityHighlight();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (error) {
     setStatus(`Unable to submit to Google Sheets: ${error.message}`, 'error');
   } finally {
     submitBtn.disabled = false;
-    backBtn.disabled = currentStep === 1;
   }
 });
 
-refreshCompetencyOptions();
-showStep(1);
+renderTools();
+renderPriorityChoices();
+renderCompetencySections();
+syncOtherToolField();
+updatePriorityHighlight();
