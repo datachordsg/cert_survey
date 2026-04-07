@@ -205,7 +205,7 @@ function renderCompetencySections() {
             <h3>${name}</h3>
             <p>${AREA_CONFIG[name].description}</p>
           </div>
-          <div class="priority-badge" hidden>Top priority</div>
+          <div class="priority-badge" hidden>Competency</div>
         </div>
 
         <div class="field-card field-card--soft">
