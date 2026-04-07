@@ -3,70 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>High-Value Individual Competency Needs Survey</title>
+  <title>Hiring Manager Interview Question Survey</title>
   <link rel="stylesheet" href="styles.css" />
+  <script>
+    window.APP_CONFIG = {
+      appsScriptUrl: "https://script.google.com/macros/s/AKfycbzRNsIJJ_8W2QFIV1Vb1lmc5RqZmNJ3SldOFdLzwL8HVDlAHPJ3-h7TF3q1YnOUOBQc/exec"
+    };
+  </script>
 </head>
 <body>
   <main class="container">
-    <section class="hero card">
-      <h1>High-Value Individual Competency Needs Survey</h1>
-      <p>This survey asks what you expect from an ideal <strong>high-value individual</strong> in <strong>digital transformation</strong> and <strong>corporate enablement</strong>.</p>
-      <p>Please describe, in your own words, what this person should <strong>do</strong>, <strong>possess</strong>, or <strong>demonstrate</strong> for each competency. The responses can later be analysed with an LLM to identify which modules and levels best match employer needs.</p>
-    </section>
-
     <section class="card">
-      <h2>Organisation context</h2>
-      <div class="meta-grid">
-        <div>
-          <label for="industry">Company industry</label>
-          <input id="industry" type="text" placeholder="e.g. Banking, Healthcare, Manufacturing" />
+      <h1>Hiring Manager Interview Question Survey</h1>
+      <p class="lead">Imagine you are hiring a high-value individual to support digital transformation and corporate enablement in your organisation.</p>
+      <p class="prompt-banner">If you were the hiring manager, what actual interview questions would you ask the candidate in this area? Please write the questions as you would ask them in the interview. You may also include questions you have in mind, even if they may not necessarily be asked.</p>
+
+      <form id="surveyForm">
+        <div id="step-indicator" class="step-indicator">Step 1 of 4</div>
+
+        <div class="step active" data-step="1">
+          <h2>About your organisation</h2>
+          <div class="field-grid">
+            <label>
+              <span>Industry</span>
+              <input type="text" id="industry" name="industry" required />
+            </label>
+            <label>
+              <span>Company size</span>
+              <select id="companySize" name="companySize" required>
+                <option value="">Select company size</option>
+                <option>1–10 employees</option>
+                <option>11–50 employees</option>
+                <option>51–200 employees</option>
+                <option>201–500 employees</option>
+                <option>501–1,000 employees</option>
+                <option>1,001–5,000 employees</option>
+                <option>More than 5,000 employees</option>
+              </select>
+            </label>
+          </div>
         </div>
-        <div>
-          <label for="companySize">Company size</label>
-          <input id="companySize" type="text" placeholder="e.g. 1-50, 51-200, 201-1000, 1000+" />
+
+        <div class="step" data-step="2">
+          <h2>Top 1 competency</h2>
+          <label>
+            <span>Which competency is your top concern?</span>
+            <select id="top1Competency" required></select>
+          </label>
+          <label class="textarea-block">
+            <span>Write the interview questions for this area</span>
+            <textarea id="top1Questions" rows="12" required></textarea>
+          </label>
         </div>
-      </div>
-    </section>
 
-    <section class="card">
-      <h2>How to answer</h2>
-      <ul class="guidance-list">
-        <li>Write what a strong person in this role should be able to do in practice.</li>
-        <li>Focus on behaviours, skills, judgement, tools, outputs, and business impact.</li>
-        <li>You can write short bullet-style phrases or full sentences.</li>
-      </ul>
-    </section>
+        <div class="step" data-step="3">
+          <h2>Top 2 competency</h2>
+          <label>
+            <span>Which competency is your second concern?</span>
+            <select id="top2Competency" required></select>
+          </label>
+          <label class="textarea-block">
+            <span>Write the interview questions for this area</span>
+            <textarea id="top2Questions" rows="12" required></textarea>
+          </label>
+        </div>
 
-    <section class="card">
-      <div class="table-wrap">
-        <table class="matrix-table">
-          <thead>
-            <tr>
-              <th class="col-num">#</th>
-              <th class="col-area">Competency</th>
-              <th class="col-question">Open-ended question</th>
-              <th class="col-response">Your response</th>
-            </tr>
-          </thead>
-          <tbody id="matrixBody"></tbody>
-        </table>
-      </div>
-    </section>
+        <div class="step" data-step="4">
+          <h2>Top 3 competency</h2>
+          <label>
+            <span>Which competency is your third concern?</span>
+            <select id="top3Competency" required></select>
+          </label>
+          <label class="textarea-block">
+            <span>Write the interview questions for this area</span>
+            <textarea id="top3Questions" rows="12" required></textarea>
+          </label>
+        </div>
 
-    <section class="card actions-card">
-      <div class="button-row">
-        <button id="resetBtn" class="secondary" type="button">Clear all answers</button>
-        <button id="submitBtn" class="primary" type="button">Submit survey</button>
-      </div>
-      <p id="statusMsg" class="status"></p>
+        <div class="actions">
+          <button type="button" id="backBtn" class="secondary">Back</button>
+          <button type="button" id="nextBtn">Next</button>
+          <button type="submit" id="submitBtn" hidden>Submit</button>
+        </div>
+      </form>
+
+      <div id="status" class="status" aria-live="polite"></div>
     </section>
   </main>
 
-  <script>
-    window.APP_CONFIG = {
-      appsScriptUrl: "https://script.google.com/macros/s/AKfycby3nZj8w-XJdQvowQ5FksCYK63J4An7CacweT77mzkF6QMFXWIRS4hh1u7Uid9FmdFE/exec"
-    };
-  </script>
   <script src="app.js"></script>
 </body>
 </html>

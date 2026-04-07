@@ -1,36 +1,51 @@
-# High-Value Individual Competency Needs Survey
+# Hiring Manager Interview Question Survey
 
 This package contains:
-- `frontend/` – static HTML survey for GitHub Pages
-- `google_apps_script/` – Google Apps Script endpoint that writes responses to Google Sheets
+- `frontend/` — static survey app for GitHub Pages
+- `google_apps_script/` — Google Apps Script backend to save responses into Google Sheets
 
-## What changed
-- Questions are now **open-ended** instead of point allocation
-- Added **company industry** and **company size** fields
-- Google Sheet output is **one response per row**
-- Each competency is saved as its **own column** in `SurveyResponses`
+## Survey flow
+1. Enter industry and company size
+2. Select Top 1 competency and write interview questions
+3. Select Top 2 competency from the remaining options and write interview questions
+4. Select Top 3 competency from the remaining options and write interview questions
 
-## Google Sheet output format
-The `SurveyResponses` tab will contain:
-- `response_id`
-- `submitted_at`
-- `industry`
-- `company_size`
-- 18 competency columns
+## Competency options
+- Analytics or Business Intelligence
+- Use of AI
+- Proficiency in Tools
+- Soft Skills and Communication
+- Governance
+
+## Google Sheet output
+Each submission is one row in `SurveyResponses` with these columns:
+- response_id
+- submitted_at
+- industry
+- company_size
+- top1_competency
+- top1_questions
+- top2_competency
+- top2_questions
+- top3_competency
+- top3_questions
+- submitted_at_client
 
 ## Setup
 1. Create a Google Sheet.
-2. Open **Extensions > Apps Script**.
-3. Paste `google_apps_script/Code.gs` into the project.
-4. Add a Script Property named `SPREADSHEET_ID` with your Google Sheet ID.
-5. Deploy the script as a **Web app**:
-   - Execute as: **Me**
-   - Who has access: **Anyone**
-6. Copy the deployed `/exec` URL.
-7. Open `frontend/index.html` and replace:
-   - `PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE`
-   with your Apps Script URL.
-8. Upload the `frontend/` files to GitHub and enable GitHub Pages.
+2. Open **Extensions > Apps Script** from that Google Sheet.
+3. Replace the default code with `google_apps_script/Code.gs`.
+4. Replace the manifest with `google_apps_script/appsscript.json`.
+5. In Apps Script, set **Script Properties**:
+   - Key: `SPREADSHEET_ID`
+   - Value: your Google Sheet ID
+6. Deploy as a **Web app**:
+   - Execute as: `Me`
+   - Who has access: `Anyone`
+7. The frontend already contains this Apps Script URL:
+   - `https://script.google.com/macros/s/AKfycbwS29VjGzrrVzZhdnye3WV0rf_u8OB48kfAAHgnfBzStabM7-8NbpGhRBXuZQHYfpaK/exec`
+8. Upload the contents of `frontend/` to a GitHub repository and enable GitHub Pages.
 
-## Important
-If you already have an older `SurveyResponses` tab from a previous version, rename or delete it before first submission.
+## Notes
+- If you already have an old `SurveyResponses` tab with a different structure, rename or delete it first.
+- The app prevents the same competency from being selected again in later steps.

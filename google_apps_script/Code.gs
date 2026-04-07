@@ -7,34 +7,25 @@ function doGet() {
 
 function doPost(e) {
   try {
-    const payloadText = e && e.parameter && e.parameter.payload
-      ? e.parameter.payload
-      : (e && e.postData && e.postData.contents ? e.postData.contents : '{}');
+    var payload = JSON.parse(e.postData.contents || '{}');
+    var sheet = getOrCreateResponsesSheet_();
+    ensureHeader_(sheet);
 
-    const data = JSON.parse(payloadText);
-    const ss = SpreadsheetApp.openById(
-      PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID')
-    );
-
-    const sheet = getOrCreateSheet_(ss, 'SurveyResponses');
-    const answers = Array.isArray(data.answers) ? data.answers : [];
-    const competencyNames = answers.map(a => a.competency);
-
-    ensureHeader_(sheet, competencyNames);
-
-    const responseMap = {};
-    answers.forEach(a => {
-      responseMap[a.competency] = a.response || '';
-    });
-
-    const row = [
+    var row = [
       Utilities.getUuid(),
       new Date(),
-      data.industry || '',
-      data.company_size || '',
-      ...competencyNames.map(name => responseMap[name] || '')
+      valueOrBlank_(payload.industry),
+      valueOrBlank_(payload.companySize),
+      valueOrBlank_(payload.top1Competency),
+      valueOrBlank_(payload.top1Questions),
+      valueOrBlank_(payload.top2Competency),
+      valueOrBlank_(payload.top2Questions),
+      valueOrBlank_(payload.top3Competency),
+      valueOrBlank_(payload.top3Questions),
+      valueOrBlank_(payload.submittedAtClient)
     ];
 
+    validatePayload_(row);
     sheet.appendRow(row);
 
     return jsonResponse_({
@@ -44,39 +35,64 @@ function doPost(e) {
   } catch (err) {
     return jsonResponse_({
       status: 'error',
-      message: err && err.message ? err.message : String(err)
+      message: err.message
     });
   }
 }
 
-function getOrCreateSheet_(ss, name) {
-  let sheet = ss.getSheetByName(name);
-  if (!sheet) sheet = ss.insertSheet(name);
+function validatePayload_(row) {
+  if (!row[2]) throw new Error('Industry is required.');
+  if (!row[3]) throw new Error('Company size is required.');
+  if (!row[4] || !row[5]) throw new Error('Top 1 competency and questions are required.');
+  if (!row[6] || !row[7]) throw new Error('Top 2 competency and questions are required.');
+  if (!row[8] || !row[9]) throw new Error('Top 3 competency and questions are required.');
+
+  var unique = {};
+  [row[4], row[6], row[8]].forEach(function(item) {
+    if (unique[item]) throw new Error('Each selected competency must be different.');
+    unique[item] = true;
+  });
+}
+
+function getOrCreateResponsesSheet_() {
+  var spreadsheetId = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  if (!spreadsheetId) {
+    throw new Error('SPREADSHEET_ID script property is missing.');
+  }
+
+  var ss = SpreadsheetApp.openById(spreadsheetId);
+  var sheet = ss.getSheetByName('SurveyResponses');
+  if (!sheet) {
+    sheet = ss.insertSheet('SurveyResponses');
+  }
   return sheet;
 }
 
-function ensureHeader_(sheet, competencyNames) {
-  const expected = [
+function ensureHeader_(sheet) {
+  if (sheet.getLastRow() > 0) return;
+
+  var header = [
     'response_id',
     'submitted_at',
     'industry',
     'company_size',
-    ...competencyNames
+    'top1_competency',
+    'top1_questions',
+    'top2_competency',
+    'top2_questions',
+    'top3_competency',
+    'top3_questions',
+    'submitted_at_client'
   ];
 
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(expected);
-    sheet.getRange(1, 1, 1, expected.length).setFontWeight('bold');
-    sheet.setFrozenRows(1);
-    sheet.autoResizeColumns(1, expected.length);
-    return;
-  }
+  sheet.appendRow(header);
+  sheet.getRange(1, 1, 1, header.length).setFontWeight('bold');
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, header.length);
+}
 
-  const existing = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  const same = existing.length === expected.length && existing.every((v, i) => String(v) === String(expected[i]));
-  if (!same) {
-    throw new Error('The SurveyResponses header does not match the current competency structure. Rename or delete the old SurveyResponses sheet, then submit again.');
-  }
+function valueOrBlank_(value) {
+  return value == null ? '' : String(value).trim();
 }
 
 function jsonResponse_(obj) {
