@@ -20,7 +20,7 @@ const AREA_DESCRIPTIONS = {
   'Governance': 'Focus on controls, responsibility, policy, compliance, ethics, and risk-aware use of digital capabilities.'
 };
 
-const PROMPT = 'If you were the hiring manager, what actual interview questions would you ask the candidate in this area? Please write the questions as you would ask them in the interview. You may also include questions you have in mind, even if they may not necessarily be asked. Please write one question per line and keep your questions mainly focused on the selected area.';
+const PROMPT = 'If you were the hiring manager, what thoughts do you have for the candidate in the form of questions in this area? Please write the questions, thoughts, concerns, etc - just as you would do in an actual interview. Please write one question per line and keep your questions mainly focused on the selected area.';
 
 const form = document.getElementById('surveyForm');
 const toolGrid = document.getElementById('toolGrid');
