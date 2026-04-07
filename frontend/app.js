@@ -20,7 +20,7 @@ const AREA_DESCRIPTIONS = {
   'Governance': 'Focus on controls, responsibility, policy, compliance, ethics, and risk-aware use of digital capabilities.'
 };
 
-const PROMPT = 'If you were the hiring manager, what thoughts do you have for the candidate in the form of questions in this area? Please write the questions, thoughts, concerns, etc - just as you would do in an actual interview. Please write one question per line and keep your questions mainly focused on the selected area.';
+const PROMPT = 'If you were the hiring manager, what interview questions would you ask the candidate in this area? Please write the questions as you would ask them in the interview. You may also include questions you have in mind, even if you might not ask them exactly in this form. Please separate each question clearly and keep your questions mainly focused on the selected area.';
 
 const form = document.getElementById('surveyForm');
 const toolGrid = document.getElementById('toolGrid');
@@ -93,11 +93,11 @@ function renderCompetencySections() {
       <div class="competency-card__body">
         <div class="prompt-panel">
           ${PROMPT}
-          <div class="prompt-note">Write one question per line.</div>
+          <div class="prompt-note">Please separate each question clearly. Putting each question on a new line is helpful.</div>
         </div>
         <label>
           <span class="field-label">Interview questions for ${name}</span>
-          <textarea id="response_${index}" data-competency="${name}" placeholder="Enter one interview question per line."></textarea>
+          <textarea id="response_${index}" data-competency="${name}" placeholder="You can write a few short questions, a list of questions, or longer questions if needed."></textarea>
         </label>
       </div>
     </section>
@@ -110,7 +110,7 @@ function updatePriorityHighlight() {
     const isPriority = card.dataset.competency === selected;
     card.classList.toggle('is-priority', isPriority);
     const chip = card.querySelector('.competency-chip');
-    chip.textContent = isPriority ? 'First and foremost priority' : `Area ${index + 1}`;
+    chip.textContent = isPriority ? 'Top priority' : `Area ${index + 1}`;
   });
 }
 
@@ -135,7 +135,7 @@ function validateForm() {
   if (!companySize) return 'Please select the company size.';
   if (!tools.length) return 'Please select at least one tool.';
   if (tools.includes('Others') && !otherToolInput.value.trim()) return 'Please specify the other tool.';
-  if (!priority) return 'Please select the first and foremost priority.';
+  if (!priority) return 'Please select the top priority.';
 
   for (let i = 0; i < COMPETENCIES.length; i += 1) {
     const value = document.getElementById(`response_${i}`).value.trim();

@@ -1,4 +1,13 @@
-# Hiring Manager Competency Survey
+# Hiring Manager Competency Survey — Premium Microsite Version
+
+This package keeps the same Google Sheets backend structure, but upgrades the frontend into a more premium, polished microsite-style survey.
+
+## What this version includes
+- a more refined visual design
+- one first-and-foremost priority selection across the 5 areas
+- responses for all 5 capability areas
+- multi-select tools field including `Others`
+- one Google Sheets row per submission
 
 ## Frontend setup
 Upload the contents of the `frontend` folder to GitHub Pages.
