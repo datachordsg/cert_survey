@@ -1,20 +1,4 @@
-# Hiring Manager Competency Survey (MCQ Version)
-
-This package contains a premium single-page survey frontend for GitHub Pages and a Google Apps Script backend that writes responses to Google Sheets.
-
-## What changed in this version
-- Replaces open-ended interview-question boxes with structured selections
-- Respondents answer **all 5 competency areas**
-- For each area, respondents provide:
-  - importance rating
-  - up to 3 focus items they would most want to assess
-  - expected level rating
-- Keeps:
-  - organisation profile
-  - tools selection
-  - top priority selection
-  - premium microsite styling
-  - submission overlay and thank-you message
+# Hiring Manager Competency Survey
 
 ## Setup
 1. Create or choose a Google Sheet.
