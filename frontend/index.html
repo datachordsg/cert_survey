@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="styles.css" />
   <script>
     window.APP_CONFIG = {
-      appsScriptUrl: "https://script.google.com/macros/s/AKfycbwH8jLkgaANKRAqtW7VcnA-_mPdHBF95MFeZHgXzOvYPXqzW-lrJLBXeJN1QpZc0rgm/exec"
+      appsScriptUrl: "https://script.google.com/macros/s/AKfycbwS29VjGzrrVzZhdnye3WV0rf_u8OB48kfAAHgnfBzStabM7-8NbpGhRBXuZQHYfpaK/exec"
     };
   </script>
 </head>
@@ -146,6 +146,28 @@
         </form>
       </section>
     </main>
+  </div>
+
+
+  <div id="submissionOverlay" class="submission-overlay" hidden aria-live="polite" aria-busy="true">
+    <div class="submission-overlay__backdrop"></div>
+    <div class="submission-overlay__content">
+      <div class="scene3d" aria-hidden="true">
+        <div class="scene3d__halo"></div>
+        <div class="scene3d__ring scene3d__ring--one"></div>
+        <div class="scene3d__ring scene3d__ring--two"></div>
+        <div class="scene3d__ring scene3d__ring--three"></div>
+        <div class="scene3d__core"></div>
+        <div class="scene3d__particles">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="scene3d__grid"></div>
+      </div>
+      <div class="submission-overlay__text">
+        <div id="submissionTitle" class="submission-overlay__title">Submitting your response</div>
+        <div id="submissionMessage" class="submission-overlay__message">Please wait while we save your response securely.</div>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>

@@ -30,10 +30,28 @@ const statusEl = document.getElementById('status');
 const submitBtn = document.getElementById('submitBtn');
 const otherToolWrap = document.getElementById('otherToolWrap');
 const otherToolInput = document.getElementById('otherTool');
+const submissionOverlay = document.getElementById('submissionOverlay');
+const submissionTitle = document.getElementById('submissionTitle');
+const submissionMessage = document.getElementById('submissionMessage');
 
 function setStatus(message, type = '') {
   statusEl.textContent = message;
   statusEl.className = 'status' + (type ? ` ${type}` : '');
+}
+
+
+function showSubmissionOverlay(title, message, mode = 'loading') {
+  submissionTitle.textContent = title;
+  submissionMessage.textContent = message;
+  submissionOverlay.hidden = false;
+  submissionOverlay.classList.toggle('is-success', mode === 'success');
+  document.body.style.overflow = 'hidden';
+}
+
+function hideSubmissionOverlay() {
+  submissionOverlay.hidden = true;
+  submissionOverlay.classList.remove('is-success');
+  document.body.style.overflow = '';
 }
 
 function renderTools() {
@@ -157,6 +175,7 @@ form.addEventListener('submit', async (event) => {
 
   submitBtn.disabled = true;
   setStatus('Submitting response...');
+  showSubmissionOverlay('Submitting your response', 'Please wait while we save your response securely.');
 
   try {
     const response = await fetch(appsScriptUrl, {
@@ -174,8 +193,13 @@ form.addEventListener('submit', async (event) => {
     form.reset();
     syncOtherToolField();
     updatePriorityHighlight();
+    showSubmissionOverlay('Submission complete', 'Thank you for your participation. We are working on something very exciting!', 'success');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      hideSubmissionOverlay();
+    }, 2600);
   } catch (error) {
+    hideSubmissionOverlay();
     setStatus(`Unable to submit to Google Sheets: ${error.message}`, 'error');
   } finally {
     submitBtn.disabled = false;
